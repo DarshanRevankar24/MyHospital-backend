@@ -8,7 +8,7 @@ WORKDIR /tmp
 COPY --from=ghcr.io/astral-sh/uv:0.9.9 /uv /usr/local/bin/uv
 
 # Copy both pyproject.toml and uv.lock for deterministic export
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock* ./
 
 # Export from lock file (not re-resolving dependencies!)
 # Filter out the local project line and keep only external dependencies
