@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...infrastructure.database.models import SoftDeleteMixin, TimestampMixin
@@ -25,11 +25,31 @@ class User(Base, TimestampMixin, SoftDeleteMixin):
         init=False,
     )
 
+    # ── Core identity (required, no default) ──────────────────────────────────
     name: Mapped[str] = mapped_column(String(30))
     username: Mapped[str] = mapped_column(String(20), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(100))
 
+    # ── Health profile (required at signup) ───────────────────────────────────
+    date_of_birth: Mapped[date] = mapped_column(Date)
+    gender: Mapped[str] = mapped_column(String(10))
+    blood_group: Mapped[str] = mapped_column(String(5))
+
+    # ── KYC / Identity (required at signup) ───────────────────────────────────
+    kyc_document_type: Mapped[str] = mapped_column(String(20))
+    kyc_document_number: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+
+    # ── Address (required at signup) ──────────────────────────────────────────
+    address_line1: Mapped[str] = mapped_column(String(120))
+    city: Mapped[str] = mapped_column(String(60))
+    state: Mapped[str] = mapped_column(String(60))
+    pincode: Mapped[str] = mapped_column(String(10))
+
+    # ── Contact (required at signup) ──────────────────────────────────────────
+    phone_number: Mapped[str] = mapped_column(String(15), unique=True, index=True)
+
+    # ── Fields with defaults (must come AFTER non-default fields) ─────────────
     profile_image_url: Mapped[str] = mapped_column(String, default="https://profileimageurl.com")
 
     tier_id: Mapped[int | None] = mapped_column(
@@ -47,6 +67,14 @@ class User(Base, TimestampMixin, SoftDeleteMixin):
     email_verified: Mapped[bool] = mapped_column(default=False)
     oauth_created_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
     oauth_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
+
+    # ── Optional health / contact fields ─────────────────────────────────────
+    height_cm: Mapped[float | None] = mapped_column(Float, default=None)
+    weight_kg: Mapped[float | None] = mapped_column(Float, default=None)
+    address_line2: Mapped[str | None] = mapped_column(String(120), default=None)
+    country: Mapped[str] = mapped_column(String(60), default="India")
+    emergency_contact_name: Mapped[str | None] = mapped_column(String(60), default=None)
+    emergency_contact_phone: Mapped[str | None] = mapped_column(String(15), default=None)
 
     tier: Mapped["Tier | None"] = relationship("Tier", back_populates="users", lazy="selectin", init=False)
 

@@ -78,6 +78,14 @@ class UserService:
         if username_exists:
             raise UserExistsError("Username already taken")
 
+        phone_exists = await crud_users.exists(db=db, phone_number=user.phone_number)
+        if phone_exists:
+            raise UserExistsError("Phone number already registered")
+
+        kyc_exists = await crud_users.exists(db=db, kyc_document_number=user.kyc_document_number)
+        if kyc_exists:
+            raise UserExistsError("KYC document number already registered")
+
         user_internal_dict = user.model_dump()
         user_internal_dict["hashed_password"] = get_password_hash(password=user_internal_dict["password"])
         del user_internal_dict["password"]
@@ -445,6 +453,26 @@ class UserService:
                 email_verified=False,
                 oauth_created_at=None,
                 oauth_updated_at=None,
+                # Health profile
+                date_of_birth=None,
+                gender=None,
+                blood_group=None,
+                height_cm=None,
+                weight_kg=None,
+                # KYC
+                kyc_document_type=None,
+                kyc_document_number=None,
+                # Address
+                address_line1=None,
+                address_line2=None,
+                city=None,
+                state=None,
+                pincode=None,
+                country=None,
+                # Contact
+                phone_number=None,
+                emergency_contact_name=None,
+                emergency_contact_phone=None,
             )
 
             await crud_users.update(db=db, object=anonymize_data, commit=False, id=user_id)
