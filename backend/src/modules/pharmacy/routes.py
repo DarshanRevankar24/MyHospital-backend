@@ -34,29 +34,7 @@ async def list_pharmacies(
         raise HTTPException(status_code=500, detail="An unexpected error occurred")
 
 
-@router.get("/{provider_id}", summary="Get Pharmacy Detail")
-async def get_pharmacy(provider_id: int, db: AsyncSessionDep, service: PharmacyServiceDep) -> dict[str, Any]:
-    try:
-        return await service.get_provider(provider_id, db)
-    except Exception as e:
-        exc = handle_exception(e)
-        if exc:
-            raise exc
-        raise HTTPException(status_code=500, detail="An unexpected error occurred")
-
-
-@router.get("/{provider_id}/medicines", summary="List Medicines at Pharmacy")
-async def list_medicines(
-    provider_id: int, db: AsyncSessionDep, service: PharmacyServiceDep, category: str | None = Query(default=None)
-) -> dict[str, Any]:
-    try:
-        return await service.list_medicines(provider_id, db, category=category)
-    except Exception as e:
-        exc = handle_exception(e)
-        if exc:
-            raise exc
-        raise HTTPException(status_code=500, detail="An unexpected error occurred")
-
+# --- Static-segment routes MUST appear before /{provider_id} ---
 
 @router.get("/medicines/search", summary="Search Medicines Across All Pharmacies")
 async def search_medicines(db: AsyncSessionDep, service: PharmacyServiceDep, name: str = Query(min_length=2)) -> dict[str, Any]:
@@ -113,6 +91,32 @@ async def cancel_order(
     try:
         await service.cancel_order(order_id, current_user["id"], db)
         return {"message": "Order cancelled"}
+    except Exception as e:
+        exc = handle_exception(e)
+        if exc:
+            raise exc
+        raise HTTPException(status_code=500, detail="An unexpected error occurred")
+
+
+# --- Parameterized routes below ---
+
+@router.get("/{provider_id}", summary="Get Pharmacy Detail")
+async def get_pharmacy(provider_id: int, db: AsyncSessionDep, service: PharmacyServiceDep) -> dict[str, Any]:
+    try:
+        return await service.get_provider(provider_id, db)
+    except Exception as e:
+        exc = handle_exception(e)
+        if exc:
+            raise exc
+        raise HTTPException(status_code=500, detail="An unexpected error occurred")
+
+
+@router.get("/{provider_id}/medicines", summary="List Medicines at Pharmacy")
+async def list_medicines(
+    provider_id: int, db: AsyncSessionDep, service: PharmacyServiceDep, category: str | None = Query(default=None)
+) -> dict[str, Any]:
+    try:
+        return await service.list_medicines(provider_id, db, category=category)
     except Exception as e:
         exc = handle_exception(e)
         if exc:

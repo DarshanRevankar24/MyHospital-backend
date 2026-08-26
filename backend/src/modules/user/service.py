@@ -78,13 +78,15 @@ class UserService:
         if username_exists:
             raise UserExistsError("Username already taken")
 
-        phone_exists = await crud_users.exists(db=db, phone_number=user.phone_number)
-        if phone_exists:
-            raise UserExistsError("Phone number already registered")
+        if user.phone_number is not None:
+            phone_exists = await crud_users.exists(db=db, phone_number=user.phone_number)
+            if phone_exists:
+                raise UserExistsError("Phone number already registered")
 
-        kyc_exists = await crud_users.exists(db=db, kyc_document_number=user.kyc_document_number)
-        if kyc_exists:
-            raise UserExistsError("KYC document number already registered")
+        if user.kyc_document_number is not None:
+            kyc_exists = await crud_users.exists(db=db, kyc_document_number=user.kyc_document_number)
+            if kyc_exists:
+                raise UserExistsError("KYC document number already registered")
 
         user_internal_dict = user.model_dump()
         user_internal_dict["hashed_password"] = get_password_hash(password=user_internal_dict["password"])

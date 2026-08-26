@@ -320,7 +320,14 @@ def create_application(
 
         @docs_router.get("/docs", include_in_schema=False)
         async def get_swagger_documentation() -> fastapi.responses.HTMLResponse:
-            return get_swagger_ui_html(openapi_url="/openapi.json", title="docs")
+            return get_swagger_ui_html(
+                openapi_url="/openapi.json",
+                title="docs",
+                swagger_ui_parameters={
+                    "withCredentials": True,        # send session cookies automatically
+                    "persistAuthorization": True,   # keep auth across page refreshes
+                },
+            )
 
         @docs_router.get("/redoc", include_in_schema=False)
         async def get_redoc_documentation() -> fastapi.responses.HTMLResponse:
@@ -328,12 +335,37 @@ def create_application(
 
         @docs_router.get("/openapi.json", include_in_schema=False)
         async def openapi() -> dict[str, Any]:
-            return get_openapi(
+            schema = get_openapi(
                 title=metadata.get("title", "API"),
                 version=metadata.get("version", "0.1.0"),
                 description=metadata.get("description", ""),
                 routes=application.routes,
             )
+            # Inject session-cookie + CSRF security schemes so Swagger UI
+            # shows the Authorize button and sends the right credentials.
+            schema.setdefault("components", {})
+            schema["components"].setdefault("securitySchemes", {})
+            schema["components"]["securitySchemes"]["cookieAuth"] = {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "session_id",
+                "description": (
+                    "Session cookie set automatically after a successful POST /auth/login. "
+                    "Make sure 'withCredentials' is enabled in your client."
+                ),
+            }
+            schema["components"]["securitySchemes"]["csrfToken"] = {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-csrf-token",
+                "description": (
+                    "CSRF token returned by POST /auth/login (field: csrf_token). "
+                    "Required for all state-changing requests (POST/PUT/PATCH/DELETE)."
+                ),
+            }
+            # Apply both schemes globally so every protected endpoint shows the lock icon.
+            schema["security"] = [{"cookieAuth": [], "csrfToken": []}]
+            return schema
 
         application.include_router(docs_router)
 
