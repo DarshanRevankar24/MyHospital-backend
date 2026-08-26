@@ -247,8 +247,11 @@ def create_application(
         and settings.ENVIRONMENT == EnvironmentOption.PRODUCTION
         and not _enable_docs_in_production
     )
-    if hide_docs:
-        kwargs.update({"docs_url": None, "redoc_url": None, "openapi_url": None})
+    # Always disable the built-in FastAPI doc routes.
+    # We register our own /docs, /redoc, /openapi.json via docs_router below so
+    # we can inject security schemes (Authorize button) and Swagger UI parameters.
+    # If docs are hidden (production), these routes simply won't be added at all.
+    kwargs.update({"docs_url": None, "redoc_url": None, "openapi_url": None})
 
     if lifespan is None:
         lifespan = lifespan_factory(settings, create_tables_on_startup=_create_tables_on_startup)
@@ -322,7 +325,7 @@ def create_application(
         async def get_swagger_documentation() -> fastapi.responses.HTMLResponse:
             return get_swagger_ui_html(
                 openapi_url="/openapi.json",
-                title="docs",
+                title=metadata.get("title", "API"),
                 swagger_ui_parameters={
                     "withCredentials": True,        # send session cookies automatically
                     "persistAuthorization": True,   # keep auth across page refreshes
@@ -331,41 +334,44 @@ def create_application(
 
         @docs_router.get("/redoc", include_in_schema=False)
         async def get_redoc_documentation() -> fastapi.responses.HTMLResponse:
-            return get_redoc_html(openapi_url="/openapi.json", title="redoc")
+            return get_redoc_html(openapi_url="/openapi.json", title=metadata.get("title", "API"))
 
         @docs_router.get("/openapi.json", include_in_schema=False)
         async def openapi() -> dict[str, Any]:
-            schema = get_openapi(
-                title=metadata.get("title", "API"),
-                version=metadata.get("version", "0.1.0"),
-                description=metadata.get("description", ""),
-                routes=application.routes,
-            )
-            # Inject session-cookie + CSRF security schemes so Swagger UI
-            # shows the Authorize button and sends the right credentials.
-            schema.setdefault("components", {})
-            schema["components"].setdefault("securitySchemes", {})
-            schema["components"]["securitySchemes"]["cookieAuth"] = {
-                "type": "apiKey",
-                "in": "cookie",
-                "name": "session_id",
-                "description": (
-                    "Session cookie set automatically after a successful POST /auth/login. "
-                    "Make sure 'withCredentials' is enabled in your client."
-                ),
-            }
-            schema["components"]["securitySchemes"]["csrfToken"] = {
-                "type": "apiKey",
-                "in": "header",
-                "name": "x-csrf-token",
-                "description": (
-                    "CSRF token returned by POST /auth/login (field: csrf_token). "
-                    "Required for all state-changing requests (POST/PUT/PATCH/DELETE)."
-                ),
-            }
-            # Apply both schemes globally so every protected endpoint shows the lock icon.
-            schema["security"] = [{"cookieAuth": [], "csrfToken": []}]
-            return schema
+            # Cache on the application object so this is only built once.
+            if not application.openapi_schema:
+                schema = get_openapi(
+                    title=metadata.get("title", "API"),
+                    version=metadata.get("version", "0.1.0"),
+                    description=metadata.get("description", ""),
+                    routes=application.routes,
+                )
+                # Inject session-cookie + CSRF security schemes so Swagger UI
+                # shows the Authorize button and sends the right credentials.
+                schema.setdefault("components", {})
+                schema["components"].setdefault("securitySchemes", {})
+                schema["components"]["securitySchemes"]["cookieAuth"] = {
+                    "type": "apiKey",
+                    "in": "cookie",
+                    "name": "session_id",
+                    "description": (
+                        "Session cookie set automatically after a successful POST /auth/login. "
+                        "Make sure 'withCredentials' is enabled in your client."
+                    ),
+                }
+                schema["components"]["securitySchemes"]["csrfToken"] = {
+                    "type": "apiKey",
+                    "in": "header",
+                    "name": "x-csrf-token",
+                    "description": (
+                        "CSRF token returned by POST /auth/login (field: csrf_token). "
+                        "Required for all state-changing requests (POST/PUT/PATCH/DELETE)."
+                    ),
+                }
+                # Apply both schemes globally so every protected endpoint shows the lock icon.
+                schema["security"] = [{"cookieAuth": [], "csrfToken": []}]
+                application.openapi_schema = schema
+            return application.openapi_schema
 
         application.include_router(docs_router)
 
