@@ -369,6 +369,17 @@ class TaskiqSettings(BaseSettings):
             raise ValueError(f"Unsupported broker type: {self.TASKIQ_BROKER_TYPE}")
 
 
+class NotificationSettings(BaseSettings):
+    """Notification & AWS SNS settings."""
+
+    AWS_REGION: str = config("AWS_REGION", default="us-east-1")
+    AWS_ACCESS_KEY_ID: str = config("AWS_ACCESS_KEY_ID", default="")
+    AWS_SECRET_ACCESS_KEY: str = config("AWS_SECRET_ACCESS_KEY", default="")
+    AWS_SNS_FCM_PLATFORM_APPLICATION_ARN: str = config(
+        "AWS_SNS_FCM_PLATFORM_APPLICATION_ARN", default=""
+    )
+
+
 class Settings(
     EnvironmentSettings,
     DatabaseSettings,
@@ -385,6 +396,7 @@ class Settings(
     SecuritySettings,
     LoggingSettings,
     TaskiqSettings,
+    NotificationSettings,
 ):
     """Main settings class that combines all setting categories."""
 
