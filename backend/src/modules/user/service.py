@@ -88,6 +88,16 @@ class UserService:
             if kyc_exists:
                 raise UserExistsError("KYC document number already registered")
 
+        if getattr(user, "google_id", None) is not None:
+            google_exists = await crud_users.exists(db=db, google_id=user.google_id)
+            if google_exists:
+                raise UserExistsError("Google account already linked to another user")
+
+        if getattr(user, "github_id", None) is not None:
+            github_exists = await crud_users.exists(db=db, github_id=user.github_id)
+            if github_exists:
+                raise UserExistsError("GitHub account already linked to another user")
+
         user_internal_dict = user.model_dump()
         user_internal_dict["hashed_password"] = get_password_hash(password=user_internal_dict["password"])
         del user_internal_dict["password"]

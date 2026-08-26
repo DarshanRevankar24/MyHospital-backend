@@ -174,13 +174,6 @@ class UserCreate(UserBase):
     emergency_contact_name: str | None = None
     emergency_contact_phone: str | None = None
 
-    google_id: str | None = None
-    github_id: str | None = None
-    oauth_provider: str | None = None
-    email_verified: bool = False
-    oauth_created_at: datetime | None = None
-    oauth_updated_at: datetime | None = None
-
     model_config = ConfigDict(extra="forbid")
 
 
