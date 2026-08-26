@@ -31,25 +31,25 @@ class User(Base, TimestampMixin, SoftDeleteMixin):
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(100))
 
-    # ── Health profile (required at signup) ───────────────────────────────────
-    date_of_birth: Mapped[date] = mapped_column(Date)
-    gender: Mapped[str] = mapped_column(String(10))
-    blood_group: Mapped[str] = mapped_column(String(5))
+    # ── Health profile (optional at creation, default None) ───────────────────
+    date_of_birth: Mapped[date | None] = mapped_column(Date, default=None)
+    gender: Mapped[str | None] = mapped_column(String(10), default=None)
+    blood_group: Mapped[str | None] = mapped_column(String(5), default=None)
 
-    # ── KYC / Identity (required at signup) ───────────────────────────────────
-    kyc_document_type: Mapped[str] = mapped_column(String(20))
-    kyc_document_number: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    # ── KYC / Identity (optional at creation, default None) ───────────────────
+    kyc_document_type: Mapped[str | None] = mapped_column(String(20), default=None)
+    kyc_document_number: Mapped[str | None] = mapped_column(String(50), unique=True, index=True, default=None)
 
-    # ── Address (required at signup) ──────────────────────────────────────────
-    address_line1: Mapped[str] = mapped_column(String(120))
-    city: Mapped[str] = mapped_column(String(60))
-    state: Mapped[str] = mapped_column(String(60))
-    pincode: Mapped[str] = mapped_column(String(10))
+    # ── Address (optional at creation, default None) ──────────────────────────
+    address_line1: Mapped[str | None] = mapped_column(String(120), default=None)
+    city: Mapped[str | None] = mapped_column(String(60), default=None)
+    state: Mapped[str | None] = mapped_column(String(60), default=None)
+    pincode: Mapped[str | None] = mapped_column(String(10), default=None)
 
-    # ── Contact (required at signup) ──────────────────────────────────────────
-    phone_number: Mapped[str] = mapped_column(String(15), unique=True, index=True)
+    # ── Contact (optional at creation, default None) ──────────────────────────
+    phone_number: Mapped[str | None] = mapped_column(String(15), unique=True, index=True, default=None)
 
-    # ── Fields with defaults (must come AFTER non-default fields) ─────────────
+    # ── Fields with defaults ──────────────────────────────────────────────────
     profile_image_url: Mapped[str] = mapped_column(String, default="https://profileimageurl.com")
 
     tier_id: Mapped[int | None] = mapped_column(
