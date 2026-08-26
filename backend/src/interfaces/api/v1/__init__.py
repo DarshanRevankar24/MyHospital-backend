@@ -12,6 +12,7 @@ from ....modules.pharmacy.routes import router as pharmacy_router
 from ....modules.rate_limit.routes import router as rate_limits_router
 from ....modules.tier.routes import router as tiers_router
 from ....modules.user.routes import router as users_router
+from ....modules.medication.routes import router as medication_router
 
 router = APIRouter(prefix="/v1")
 router.include_router(users_router, prefix="/users")
@@ -20,6 +21,7 @@ router.include_router(rate_limits_router, prefix="/rate-limits")
 router.include_router(auth_router, prefix="/auth")
 router.include_router(api_keys_router, prefix="/api-keys")
 router.include_router(family_router, prefix="/family")
+router.include_router(medication_router, prefix="/medications")
 router.include_router(notification_router)
 
 # Services

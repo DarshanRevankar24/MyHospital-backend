@@ -5,6 +5,7 @@ from typing import Any
 from fastapi import APIRouter
 
 from ...infrastructure.dependencies import AsyncSessionDep, CurrentUserDep
+from ..medication.schemas import MedicationCreate, MedicationUpdate, MedicationRead
 from .dependencies import FamilyServiceDep
 from .schemas import FamilyRequestCreate, FamilyRequestUpdate
 
@@ -117,3 +118,62 @@ async def remove_family_member(
     """Remove a family connection. Either party can remove the connection."""
     await service.remove_member(connection_id=connection_id, user_id=current_user["id"], db=db)
     return {"message": "Family member removed successfully"}
+
+@router.get("/members/{connection_id}/medications", summary="View family member's medications")
+async def get_member_medications(
+    connection_id: int,
+    current_user: CurrentUserDep,
+    db: AsyncSessionDep,
+    service: FamilyServiceDep,
+) -> list[dict[str, Any]]:
+    """Get the medication schedule of a connected family member.
+    
+    Requires an active connection with document access enabled.
+    """
+    return await service.get_member_medications(
+        connection_id=connection_id, viewer_id=current_user["id"], db=db
+    )
+
+@router.post("/members/{connection_id}/medications", summary="Add medication for family member")
+async def add_member_medication(
+    connection_id: int,
+    data: MedicationCreate,
+    current_user: CurrentUserDep,
+    db: AsyncSessionDep,
+    service: FamilyServiceDep,
+) -> dict[str, Any]:
+    """Add a new medication to a family member's schedule.
+    
+    The family member will receive a push notification.
+    """
+    return await service.add_member_medication(
+        connection_id=connection_id, viewer_id=current_user["id"], data=data, db=db
+    )
+
+@router.patch("/members/{connection_id}/medications/{medication_id}", summary="Update family member's medication")
+async def update_member_medication(
+    connection_id: int,
+    medication_id: int,
+    data: MedicationUpdate,
+    current_user: CurrentUserDep,
+    db: AsyncSessionDep,
+    service: FamilyServiceDep,
+) -> dict[str, Any]:
+    """Update dosage, timings, or instructions for a family member's medicine."""
+    return await service.update_member_medication(
+        connection_id=connection_id, medication_id=medication_id, viewer_id=current_user["id"], data=data, db=db
+    )
+
+@router.delete("/members/{connection_id}/medications/{medication_id}", summary="Delete family member's medication")
+async def delete_member_medication(
+    connection_id: int,
+    medication_id: int,
+    current_user: CurrentUserDep,
+    db: AsyncSessionDep,
+    service: FamilyServiceDep,
+) -> dict[str, str]:
+    """Remove a medicine from a family member's schedule."""
+    await service.delete_member_medication(
+        connection_id=connection_id, medication_id=medication_id, viewer_id=current_user["id"], db=db
+    )
+    return {"message": "Medication deleted successfully"}

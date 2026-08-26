@@ -12,6 +12,8 @@ from ..hospital.crud import crud_hospital_bookings
 from ..laboratory.crud import crud_lab_bookings
 from ..notification.service import send_push_notification, send_sms_notification
 from ..pharmacy.crud import crud_pharmacy_orders
+from ..medication.crud import crud_medications
+from ..medication.schemas import MedicationCreate, MedicationUpdate, MedicationRead
 from ..user.crud import crud_users
 from ..user.schemas import UserRead
 from .crud import crud_family_connection
@@ -338,3 +340,110 @@ class FamilyService:
             "blood_requests": _data(blood_res),
             "ambulance_requests": _data(ambulance_res),
         }
+
+    async def _verify_medication_access(self, connection_id: int, viewer_id: int, db: AsyncSession) -> dict[str, Any]:
+        """Helper to verify access to a member's medications."""
+        conn = await crud_family_connection.get(db=db, id=connection_id, is_deleted=False)
+        if not conn:
+            raise HTTPException(status_code=404, detail="Family connection not found.")
+
+        if conn["requester_id"] != viewer_id and conn["recipient_id"] != viewer_id:
+            raise HTTPException(status_code=403, detail="Not authorized to access this connection's medications.")
+
+        if conn["status"] != "connected":
+            raise HTTPException(status_code=400, detail="Medication access is only available for active connections.")
+
+        if not conn.get("document_access_enabled", True):
+            raise HTTPException(
+                status_code=403,
+                detail="Document/Medication access has been disabled for this connection.",
+            )
+            
+        target_user_id = conn["recipient_id"] if viewer_id == conn["requester_id"] else conn["requester_id"]
+        return {"conn": conn, "target_user_id": target_user_id}
+
+    async def get_member_medications(self, connection_id: int, viewer_id: int, db: AsyncSession, limit: int = 100) -> list[dict[str, Any]]:
+        """Get medications of a connected family member."""
+        access_data = await self._verify_medication_access(connection_id, viewer_id, db)
+        target_user_id = access_data["target_user_id"]
+        
+        res = await crud_medications.get_multi(
+            db=db, 
+            user_id=target_user_id, 
+            is_deleted=False, 
+            schema_to_select=MedicationRead,
+            limit=limit
+        )
+        return res.get("data", []) if isinstance(res, dict) else []
+
+    async def add_member_medication(
+        self, connection_id: int, viewer_id: int, data: MedicationCreate, db: AsyncSession
+    ) -> dict[str, Any]:
+        """Add a medication for a connected family member."""
+        access_data = await self._verify_medication_access(connection_id, viewer_id, db)
+        target_user_id = access_data["target_user_id"]
+        
+        create_data = data.model_dump()
+        create_data["user_id"] = target_user_id
+        create_data["created_by_user_id"] = viewer_id
+        
+        created = await crud_medications.create(
+            db=db, object=create_data, schema_to_select=MedicationRead
+        )
+        if not created:
+            raise HTTPException(status_code=500, detail="Failed to create medication.")
+            
+        # Optional: Send push notification to target user about new medication added by family member
+        try:
+            viewer = await crud_users.get(db=db, schema_to_select=UserRead, id=viewer_id)
+            viewer_name = viewer["name"] if viewer else "A family member"
+            await send_push_notification(
+                db=db,
+                user_id=target_user_id,
+                title="New Medication Added",
+                message=f"{viewer_name} added a new medication '{data.name}' to your schedule.",
+                notification_type="medication_added"
+            )
+        except Exception as exc:
+            logger.warning(f"Push notification failed for medication added: {exc}")
+            
+        return created
+
+    async def update_member_medication(
+        self, connection_id: int, medication_id: int, viewer_id: int, data: MedicationUpdate, db: AsyncSession
+    ) -> dict[str, Any]:
+        """Update a medication for a connected family member."""
+        access_data = await self._verify_medication_access(connection_id, viewer_id, db)
+        target_user_id = access_data["target_user_id"]
+        
+        med = await crud_medications.get(db=db, id=medication_id, is_deleted=False)
+        if not med:
+            raise HTTPException(status_code=404, detail="Medication not found.")
+            
+        if med["user_id"] != target_user_id:
+            raise HTTPException(status_code=403, detail="Medication does not belong to this family member.")
+            
+        update_data = data.model_dump(exclude_none=True)
+        if not update_data:
+            raise HTTPException(status_code=400, detail="No fields to update.")
+            
+        updated = await crud_medications.update(
+            db=db, id=medication_id, object=update_data, schema_to_select=MedicationRead
+        )
+        return updated
+
+    async def delete_member_medication(
+        self, connection_id: int, medication_id: int, viewer_id: int, db: AsyncSession
+    ) -> None:
+        """Delete a medication for a connected family member."""
+        access_data = await self._verify_medication_access(connection_id, viewer_id, db)
+        target_user_id = access_data["target_user_id"]
+        
+        med = await crud_medications.get(db=db, id=medication_id, is_deleted=False)
+        if not med:
+            raise HTTPException(status_code=404, detail="Medication not found.")
+            
+        if med["user_id"] != target_user_id:
+            raise HTTPException(status_code=403, detail="Medication does not belong to this family member.")
+            
+        await crud_medications.delete(db=db, id=medication_id)
