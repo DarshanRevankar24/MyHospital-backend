@@ -1,7 +1,5 @@
 import pytest
-from src.modules.notification.enums import NotificationChannel, NotificationStatus
-from src.modules.notification.models import DeviceToken, NotificationLog, NotificationPreference
-from src.modules.notification.schemas import DeviceTokenCreate, SendPushNotification, SendSMSNotification
+
 from src.modules.notification.sns_client import sns_client
 
 

@@ -1,4 +1,3 @@
-from typing import Any
 from fastapi import APIRouter
 
 from ...infrastructure.dependencies import AsyncSessionDep, CurrentUserDep
@@ -21,9 +20,7 @@ async def register_device_token(
     db: AsyncSessionDep,
 ) -> DeviceTokenResponse:
     """Register or update an Android FCM token for AWS SNS push notifications."""
-    device = await NotificationService.register_device_token(
-        db=db, user_id=current_user["id"], token_in=token_in
-    )
+    device = await NotificationService.register_device_token(db=db, user_id=current_user["id"], token_in=token_in)
     return DeviceTokenResponse.model_validate(device)
 
 
@@ -70,7 +67,5 @@ async def get_notification_history(
     offset: int = 0,
 ) -> list[NotificationLogRead]:
     """Retrieve history log of sent push and SMS notifications for the logged-in user."""
-    logs = await NotificationService.get_user_notifications(
-        db=db, user_id=current_user["id"], limit=limit, offset=offset
-    )
+    logs = await NotificationService.get_user_notifications(db=db, user_id=current_user["id"], limit=limit, offset=offset)
     return [NotificationLogRead.model_validate(log) for log in logs]

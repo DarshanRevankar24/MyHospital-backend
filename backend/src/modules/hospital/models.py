@@ -24,7 +24,7 @@ class HospitalProvider(Base, TimestampMixin):
     state: Mapped[str] = mapped_column(String(60))
     pincode: Mapped[str] = mapped_column(String(10))
     phone: Mapped[str] = mapped_column(String(15))
-    
+
     address_line2: Mapped[str | None] = mapped_column(String(120), default=None)
     email: Mapped[str | None] = mapped_column(String(80), default=None)
     website: Mapped[str | None] = mapped_column(String(200), default=None)
@@ -53,7 +53,7 @@ class HospitalDoctor(Base, TimestampMixin):
     speciality: Mapped[str] = mapped_column(String(60))
     qualification: Mapped[str] = mapped_column(String(120))
     consultation_fee: Mapped[Decimal] = mapped_column(Numeric(10, 2))
-    
+
     experience_years: Mapped[int] = mapped_column(Integer, default=0)
     available_days: Mapped[list] = mapped_column(JSON, default=list)
     slot_duration_min: Mapped[int] = mapped_column(Integer, default=15)
@@ -62,9 +62,7 @@ class HospitalDoctor(Base, TimestampMixin):
     provider: Mapped["HospitalProvider"] = relationship(
         "HospitalProvider", back_populates="doctors", lazy="selectin", init=False
     )
-    slots: Mapped[list["HospitalSlot"]] = relationship(
-        "HospitalSlot", back_populates="doctor", lazy="selectin", init=False
-    )
+    slots: Mapped[list["HospitalSlot"]] = relationship("HospitalSlot", back_populates="doctor", lazy="selectin", init=False)
 
     def __repr__(self) -> str:
         return f"Dr. {self.name} ({self.speciality})"
@@ -85,9 +83,7 @@ class HospitalSlot(Base, TimestampMixin):
     booked_count: Mapped[int] = mapped_column(Integer, default=0)
     is_blocked: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    doctor: Mapped["HospitalDoctor"] = relationship(
-        "HospitalDoctor", back_populates="slots", lazy="selectin", init=False
-    )
+    doctor: Mapped["HospitalDoctor"] = relationship("HospitalDoctor", back_populates="slots", lazy="selectin", init=False)
 
     def __repr__(self) -> str:
         return f"HospitalSlot({self.slot_date} {self.start_time})"
@@ -107,7 +103,7 @@ class HospitalBooking(Base, TimestampMixin):
     patient_name: Mapped[str] = mapped_column(String(80))
     patient_phone: Mapped[str] = mapped_column(String(15))
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
-    
+
     patient_dob: Mapped[date | None] = mapped_column(Date, default=None)
     patient_gender: Mapped[str | None] = mapped_column(String(10), default=None)
     symptoms: Mapped[str | None] = mapped_column(String(500), default=None)

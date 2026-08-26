@@ -123,6 +123,14 @@ ignore_missing_imports = true
 module = "taskiq_aio_pika"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "boto3"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "botocore.*"
+ignore_missing_imports = true
+
 [tool.ruff]
 line-length = 128
 

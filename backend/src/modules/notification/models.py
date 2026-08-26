@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import DateTime, ForeignKey, Integer, JSON, String
+from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...infrastructure.database.models import SoftDeleteMixin, TimestampMixin
@@ -35,9 +35,7 @@ class DeviceToken(Base, TimestampMixin, SoftDeleteMixin):
     sns_endpoint_arn: Mapped[str | None] = mapped_column(String(500), default=None)
     is_active: Mapped[bool] = mapped_column(default=True)
 
-    user: Mapped["User"] = relationship(
-        "User", foreign_keys=[user_id], lazy="selectin", init=False
-    )
+    user: Mapped["User"] = relationship("User", foreign_keys=[user_id], lazy="selectin", init=False)
 
     def __repr__(self) -> str:
         return f"<DeviceToken(user_id={self.user_id}, platform={self.platform}, device_id={self.device_id})>"
@@ -72,9 +70,7 @@ class NotificationLog(Base, TimestampMixin, SoftDeleteMixin):
     payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)
     read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
 
-    user: Mapped["User | None"] = relationship(
-        "User", foreign_keys=[user_id], lazy="selectin", init=False
-    )
+    user: Mapped["User | None"] = relationship("User", foreign_keys=[user_id], lazy="selectin", init=False)
 
     def __repr__(self) -> str:
         return f"<NotificationLog(id={self.id}, channel={self.channel}, status={self.status})>"
@@ -104,9 +100,7 @@ class NotificationPreference(Base, TimestampMixin, SoftDeleteMixin):
         JSON, default=lambda: {"promotional": True, "transactional": True}
     )
 
-    user: Mapped["User"] = relationship(
-        "User", foreign_keys=[user_id], lazy="selectin", init=False
-    )
+    user: Mapped["User"] = relationship("User", foreign_keys=[user_id], lazy="selectin", init=False)
 
     def __repr__(self) -> str:
         return f"<NotificationPreference(user_id={self.user_id}, push={self.push_enabled}, sms={self.sms_enabled})>"

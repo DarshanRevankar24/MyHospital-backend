@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Any
+
 from pydantic import BaseModel, Field
 
-from .enums import DevicePlatform, NotificationChannel
+from .enums import DevicePlatform
 
 
 class DeviceTokenCreate(BaseModel):

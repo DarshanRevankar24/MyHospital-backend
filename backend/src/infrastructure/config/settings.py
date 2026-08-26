@@ -375,9 +375,7 @@ class NotificationSettings(BaseSettings):
     AWS_REGION: str = config("AWS_REGION", default="us-east-1")
     AWS_ACCESS_KEY_ID: str = config("AWS_ACCESS_KEY_ID", default="")
     AWS_SECRET_ACCESS_KEY: str = config("AWS_SECRET_ACCESS_KEY", default="")
-    AWS_SNS_FCM_PLATFORM_APPLICATION_ARN: str = config(
-        "AWS_SNS_FCM_PLATFORM_APPLICATION_ARN", default=""
-    )
+    AWS_SNS_FCM_PLATFORM_APPLICATION_ARN: str = config("AWS_SNS_FCM_PLATFORM_APPLICATION_ARN", default="")
 
 
 class Settings(

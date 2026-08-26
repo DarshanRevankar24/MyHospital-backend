@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 try:
     import boto3
     from botocore.exceptions import BotoCoreError, ClientError
+
     BOTO3_AVAILABLE = True
 except ImportError:
     BOTO3_AVAILABLE = False
@@ -53,16 +54,14 @@ class SNSClient:
                 Token=fcm_token,
                 CustomUserData=custom_user_data,
             )
-            endpoint_arn = response.get("EndpointArn", "")
+            endpoint_arn = str(response.get("EndpointArn", ""))
             logger.info(f"Created SNS Endpoint ARN: {endpoint_arn}")
             return endpoint_arn
         except (BotoCoreError, ClientError) as e:
             logger.error(f"Failed to create AWS SNS Platform Endpoint: {e}")
             raise RuntimeError(f"AWS SNS Endpoint Creation Error: {e}") from e
 
-    def send_android_push(
-        self, endpoint_arn: str, title: str, body: str, custom_data: dict[str, Any] | None = None
-    ) -> str:
+    def send_android_push(self, endpoint_arn: str, title: str, body: str, custom_data: dict[str, Any] | None = None) -> str:
         """Send Android Push Notification via AWS SNS Platform Endpoint (FCM/GCM JSON structure).
 
         Returns MessageId string.
@@ -97,7 +96,7 @@ class SNSClient:
                 Message=message_json,
                 MessageStructure="json",
             )
-            message_id = response.get("MessageId", "")
+            message_id = str(response.get("MessageId", ""))
             logger.info(f"Published SNS Push Notification MessageId: {message_id}")
             return message_id
         except (BotoCoreError, ClientError) as e:
@@ -126,7 +125,7 @@ class SNSClient:
                     }
                 },
             )
-            message_id = response.get("MessageId", "")
+            message_id = str(response.get("MessageId", ""))
             logger.info(f"Published SNS SMS to {phone_number}, MessageId: {message_id}")
             return message_id
         except (BotoCoreError, ClientError) as e:

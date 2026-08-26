@@ -1,5 +1,6 @@
 import logging
 from typing import Any
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,9 +17,7 @@ class NotificationService:
     """Service handling Android Push Notifications and SMS dispatch via AWS SNS."""
 
     @staticmethod
-    async def register_device_token(
-        db: AsyncSession, user_id: int, token_in: DeviceTokenCreate
-    ) -> DeviceToken:
+    async def register_device_token(db: AsyncSession, user_id: int, token_in: DeviceTokenCreate) -> DeviceToken:
         """Register or update a user's Android FCM device token and register with SNS."""
         # Query existing token for this user & device_id
         result = await db.execute(
@@ -31,9 +30,7 @@ class NotificationService:
         existing_device = result.scalars().first()
 
         # Register endpoint with AWS SNS Platform Application
-        endpoint_arn = sns_client.create_platform_endpoint(
-            fcm_token=token_in.fcm_token, custom_user_data=f"user_{user_id}"
-        )
+        endpoint_arn = sns_client.create_platform_endpoint(fcm_token=token_in.fcm_token, custom_user_data=f"user_{user_id}")
 
         if existing_device:
             existing_device.fcm_token = token_in.fcm_token
@@ -68,9 +65,7 @@ class NotificationService:
     ) -> list[NotificationLog]:
         """Send an Android push notification to all active devices of a user via AWS SNS."""
         # Check user preferences
-        pref_res = await db.execute(
-            select(NotificationPreference).where(NotificationPreference.user_id == user_id)
-        )
+        pref_res = await db.execute(select(NotificationPreference).where(NotificationPreference.user_id == user_id))
         pref = pref_res.scalars().first()
         if pref and not pref.push_enabled:
             logger.info(f"Push notifications disabled for user_id={user_id}. Skipping.")
@@ -166,9 +161,7 @@ class NotificationService:
 
         # Check preference if user_id is provided
         if user_id:
-            pref_res = await db.execute(
-                select(NotificationPreference).where(NotificationPreference.user_id == user_id)
-            )
+            pref_res = await db.execute(select(NotificationPreference).where(NotificationPreference.user_id == user_id))
             pref = pref_res.scalars().first()
             if pref and not pref.sms_enabled:
                 logger.info(f"SMS notifications disabled for user_id={user_id}. Skipping.")
@@ -211,9 +204,7 @@ class NotificationService:
         return log_entry
 
     @staticmethod
-    async def get_user_notifications(
-        db: AsyncSession, user_id: int, limit: int = 50, offset: int = 0
-    ) -> list[NotificationLog]:
+    async def get_user_notifications(db: AsyncSession, user_id: int, limit: int = 50, offset: int = 0) -> list[NotificationLog]:
         """Fetch notification history log for a specific user."""
         result = await db.execute(
             select(NotificationLog)

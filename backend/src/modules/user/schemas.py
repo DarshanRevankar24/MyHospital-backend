@@ -6,8 +6,8 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 from ..common.schemas import PersistentDeletion, TimestampSchema
 from .enums import BloodGroupEnum, GenderEnum, KYCDocumentType
 
-
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
 
 def _mask_doc_number(value: str) -> str:
     """Return a masked document number exposing only the last 4 characters."""
@@ -17,6 +17,7 @@ def _mask_doc_number(value: str) -> str:
 
 
 # ── Base ──────────────────────────────────────────────────────────────────────
+
 
 class UserBase(BaseModel):
     name: Annotated[str, Field(min_length=2, max_length=30, examples=["User Userson"])]
@@ -64,6 +65,7 @@ class UserBase(BaseModel):
 
 # ── Full internal schema ──────────────────────────────────────────────────────
 
+
 class User(TimestampSchema, UserBase, PersistentDeletion):
     """Complete user model with all fields."""
 
@@ -93,6 +95,7 @@ class User(TimestampSchema, UserBase, PersistentDeletion):
 
 
 # ── Read (public) ─────────────────────────────────────────────────────────────
+
 
 class UserRead(BaseModel):
     """Schema for reading user data, excludes sensitive information.
@@ -146,6 +149,7 @@ class UserRead(BaseModel):
 
 # ── Create ────────────────────────────────────────────────────────────────────
 
+
 class UserCreate(UserBase):
     """Schema for creating a new user."""
 
@@ -179,6 +183,7 @@ class UserCreate(UserBase):
 
 # ── Create Internal ───────────────────────────────────────────────────────────
 
+
 class UserCreateInternal(UserBase):
     """Internal schema for user creation with hashed password."""
 
@@ -197,6 +202,7 @@ class UserCreateInternal(UserBase):
 
 
 # ── Update ────────────────────────────────────────────────────────────────────
+
 
 class UserUpdate(BaseModel):
     """Schema for updating user data — all fields are optional."""
@@ -266,6 +272,7 @@ class UserUpdate(BaseModel):
 
 # ── Update Internal ───────────────────────────────────────────────────────────
 
+
 class UserUpdateInternal(UserUpdate):
     """Internal schema for user updates."""
 
@@ -274,6 +281,7 @@ class UserUpdateInternal(UserUpdate):
 
 # ── Tier Update ───────────────────────────────────────────────────────────────
 
+
 class UserTierUpdate(BaseModel):
     """Schema for updating a user's tier."""
 
@@ -281,6 +289,7 @@ class UserTierUpdate(BaseModel):
 
 
 # ── Soft Delete ───────────────────────────────────────────────────────────────
+
 
 class UserDelete(BaseModel):
     """Schema for soft-deleting a user."""
@@ -292,6 +301,7 @@ class UserDelete(BaseModel):
 
 
 # ── GDPR Anonymize ────────────────────────────────────────────────────────────
+
 
 class UserAnonymize(BaseModel):
     """Schema for GDPR/LGPD compliant user anonymization.
@@ -342,6 +352,7 @@ class UserAnonymize(BaseModel):
 
 
 # ── Restore Deleted ───────────────────────────────────────────────────────────
+
 
 class UserRestoreDeleted(BaseModel):
     """Schema for restoring a deleted user."""

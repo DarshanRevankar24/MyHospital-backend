@@ -4,14 +4,14 @@ from ....infrastructure.auth.routes import router as auth_router
 from ....modules.ambulance.routes import router as ambulance_router
 from ....modules.api_keys.routes import router as api_keys_router
 from ....modules.blood_bank.routes import router as blood_bank_router
+from ....modules.family.routes import router as family_router
 from ....modules.hospital.routes import router as hospital_router
 from ....modules.laboratory.routes import router as laboratory_router
+from ....modules.notification.routes import router as notification_router
 from ....modules.pharmacy.routes import router as pharmacy_router
 from ....modules.rate_limit.routes import router as rate_limits_router
 from ....modules.tier.routes import router as tiers_router
 from ....modules.user.routes import router as users_router
-from ....modules.family.routes import router as family_router
-from ....modules.notification.routes import router as notification_router
 
 router = APIRouter(prefix="/v1")
 router.include_router(users_router, prefix="/users")
