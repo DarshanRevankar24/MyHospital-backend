@@ -63,7 +63,7 @@ async def test_create_user_duplicate_username(client: AsyncClient, db_session: A
     logger.info(f"Testing user creation with duplicate username: {user_data['username']}")
     response = await client.post("/api/v1/users/", json=user_data)
 
-    assert response.status_code == 422
+    assert response.status_code == 409
     data = response.json()
     assert "detail" in data
 
@@ -76,7 +76,7 @@ async def test_create_user_duplicate_email(client: AsyncClient, db_session: Asyn
     logger.info(f"Testing user creation with duplicate email: {user_data['email']}")
     response = await client.post("/api/v1/users/", json=user_data)
 
-    assert response.status_code == 422
+    assert response.status_code == 409
     data = response.json()
     assert "detail" in data
 

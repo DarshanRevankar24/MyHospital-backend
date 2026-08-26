@@ -235,6 +235,22 @@ OAUTH_GITHUB_CLIENT_ID=
 OAUTH_GITHUB_CLIENT_SECRET=
 ```
 
+### AWS SNS & Push Notifications
+
+```env
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_SNS_FCM_PLATFORM_APPLICATION_ARN=
+```
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `AWS_REGION` | `us-east-1` | AWS region for SNS client |
+| `AWS_ACCESS_KEY_ID` | `""` | AWS IAM access key ID |
+| `AWS_SECRET_ACCESS_KEY` | `""` | AWS IAM secret access key |
+| `AWS_SNS_FCM_PLATFORM_APPLICATION_ARN` | `""` | AWS SNS Platform Application ARN for Android FCM push notifications |
+
 ## Admin Interface (SQLAdmin)
 
 ```env

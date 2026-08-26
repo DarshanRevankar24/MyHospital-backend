@@ -71,6 +71,7 @@ The actual classes that ship with the boilerplate, all in `src/infrastructure/co
 | `SecuritySettings` | `PRODUCTION_SECURITY_VALIDATION_ENABLED`, `PRODUCTION_SECURITY_STRICT_MODE` |
 | `LoggingSettings` | All `LOG_*` |
 | `TaskiqSettings` | `TASKIQ_*` (Redis + RabbitMQ + worker tuning) |
+| `NotificationSettings` | `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SNS_FCM_PLATFORM_APPLICATION_ARN` |
 
 ## Anatomy of a Settings Group
 

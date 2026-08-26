@@ -3,7 +3,6 @@
 from collections.abc import Callable
 
 from ...infrastructure.auth.http_exceptions import (
-    DuplicateValueException,
     ForbiddenException,
     HTTPException,
     NotFoundException,

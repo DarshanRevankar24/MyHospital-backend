@@ -18,7 +18,7 @@ class BloodBankProvider(Base, TimestampMixin):
     state: Mapped[str] = mapped_column(String(60))
     pincode: Mapped[str] = mapped_column(String(10))
     phone: Mapped[str] = mapped_column(String(15))
-    
+
     address_line2: Mapped[str | None] = mapped_column(String(120), default=None)
     email: Mapped[str | None] = mapped_column(String(80), default=None)
     is_24x7: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -52,7 +52,7 @@ class BloodRequest(Base, TimestampMixin):
     units_required: Mapped[int] = mapped_column(Integer)
     patient_name: Mapped[str] = mapped_column(String(80))
     patient_contact: Mapped[str] = mapped_column(String(15))
-    
+
     urgency: Mapped[str] = mapped_column(String(10), default="normal")
     patient_hospital: Mapped[str | None] = mapped_column(String(120), default=None)
     required_by_date: Mapped[str | None] = mapped_column(String(10), default=None)

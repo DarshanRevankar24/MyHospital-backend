@@ -1,8 +1,11 @@
 """Ambulance Pydantic schemas."""
 
 from typing import Annotated
+
 from pydantic import BaseModel, ConfigDict, Field
+
 from .enums import AmbulanceRequestStatus, AmbulanceType
+
 
 class AmbulanceProviderRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -14,6 +17,7 @@ class AmbulanceProviderRead(BaseModel):
     phone: str
     is_verified: bool
 
+
 class AmbulanceProviderCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: Annotated[str, Field(min_length=2, max_length=120)]
@@ -21,6 +25,7 @@ class AmbulanceProviderCreate(BaseModel):
     city: Annotated[str, Field(min_length=2, max_length=60)]
     state: Annotated[str, Field(min_length=2, max_length=60)]
     phone: Annotated[str, Field(min_length=10, max_length=15)]
+
 
 class AmbulanceVehicleRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -31,12 +36,14 @@ class AmbulanceVehicleRead(BaseModel):
     is_ac: bool
     is_available: bool
 
+
 class AmbulanceVehicleCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
     provider_id: int
     vehicle_number: Annotated[str, Field(min_length=2, max_length=30)]
     ambulance_type: AmbulanceType
     is_ac: bool = True
+
 
 class AmbulanceRequestCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -47,6 +54,7 @@ class AmbulanceRequestCreate(BaseModel):
     patient_name: Annotated[str, Field(min_length=2, max_length=80)]
     patient_condition: str | None = None
     ambulance_type: AmbulanceType = AmbulanceType.BASIC
+
 
 class AmbulanceRequestRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)

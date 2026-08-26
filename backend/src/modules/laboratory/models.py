@@ -21,7 +21,7 @@ class LaboratoryProvider(Base, TimestampMixin):
     state: Mapped[str] = mapped_column(String(60))
     pincode: Mapped[str] = mapped_column(String(10))
     phone: Mapped[str] = mapped_column(String(15))
-    
+
     address_line2: Mapped[str | None] = mapped_column(String(120), default=None)
     email: Mapped[str | None] = mapped_column(String(80), default=None)
     is_home_collection_available: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -45,7 +45,7 @@ class LabTest(Base, TimestampMixin):
     test_code: Mapped[str] = mapped_column(String(30), index=True)
     category: Mapped[str] = mapped_column(String(40))
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
-    
+
     description: Mapped[str | None] = mapped_column(String(500), default=None)
     discount_price: Mapped[Decimal | None] = mapped_column(Numeric(10, 2), default=None)
     preparation_instructions: Mapped[str | None] = mapped_column(String(300), default=None)
@@ -70,7 +70,7 @@ class LabBooking(Base, TimestampMixin):
     patient_name: Mapped[str] = mapped_column(String(80))
     patient_phone: Mapped[str] = mapped_column(String(15))
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
-    
+
     test_ids: Mapped[list] = mapped_column(JSON, default=list)
     collection_type: Mapped[str] = mapped_column(String(20), default="walk_in")
     collection_date: Mapped[str | None] = mapped_column(String(10), default=None)

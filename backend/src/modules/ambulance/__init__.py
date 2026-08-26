@@ -1,2 +1,3 @@
-from .models import AmbulanceProvider, AmbulanceVehicle, AmbulanceRequest
+from .models import AmbulanceProvider, AmbulanceRequest, AmbulanceVehicle
+
 __all__ = ["AmbulanceProvider", "AmbulanceVehicle", "AmbulanceRequest"]

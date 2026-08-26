@@ -19,7 +19,9 @@ class AmbulanceProvider(Base, TimestampMixin):
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    vehicles: Mapped[list["AmbulanceVehicle"]] = relationship("AmbulanceVehicle", back_populates="provider", lazy="selectin", init=False)
+    vehicles: Mapped[list["AmbulanceVehicle"]] = relationship(
+        "AmbulanceVehicle", back_populates="provider", lazy="selectin", init=False
+    )
 
     def __repr__(self) -> str:
         return f"AmbulanceProvider({self.name})"
@@ -35,7 +37,9 @@ class AmbulanceVehicle(Base, TimestampMixin):
     is_ac: Mapped[bool] = mapped_column(Boolean, default=True)
     is_available: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    provider: Mapped["AmbulanceProvider"] = relationship("AmbulanceProvider", back_populates="vehicles", lazy="selectin", init=False)
+    provider: Mapped["AmbulanceProvider"] = relationship(
+        "AmbulanceProvider", back_populates="vehicles", lazy="selectin", init=False
+    )
 
     def __repr__(self) -> str:
         return f"AmbulanceVehicle({self.vehicle_number}, {self.ambulance_type})"
@@ -51,7 +55,7 @@ class AmbulanceRequest(Base, TimestampMixin):
     destination_address: Mapped[str] = mapped_column(String(300))
     patient_name: Mapped[str] = mapped_column(String(80))
     ambulance_type: Mapped[str] = mapped_column(String(30))
-    
+
     provider_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("ambulance_provider.id"), index=True, default=None)
     vehicle_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("ambulance_vehicle.id"), index=True, default=None)
     pickup_latitude: Mapped[float | None] = mapped_column(Float, default=None)

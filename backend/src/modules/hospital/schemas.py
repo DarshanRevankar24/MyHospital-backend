@@ -8,11 +8,12 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .enums import BookingStatus, Speciality
 
-
 # ── Provider ──────────────────────────────────────────────────────────────────
+
 
 class HospitalProviderRead(BaseModel):
     """Public-facing hospital provider detail."""
+
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -34,6 +35,7 @@ class HospitalProviderRead(BaseModel):
 
 class HospitalProviderCreate(BaseModel):
     """Admin-only: create a hospital provider (seed data)."""
+
     model_config = ConfigDict(extra="forbid")
 
     name: Annotated[str, Field(min_length=2, max_length=120)]
@@ -52,6 +54,7 @@ class HospitalProviderCreate(BaseModel):
 
 
 # ── Doctor ────────────────────────────────────────────────────────────────────
+
 
 class HospitalDoctorRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -82,6 +85,7 @@ class HospitalDoctorCreate(BaseModel):
 
 
 # ── Slot ──────────────────────────────────────────────────────────────────────
+
 
 class HospitalSlotRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -114,8 +118,10 @@ class HospitalSlotCreate(BaseModel):
 
 # ── Booking ───────────────────────────────────────────────────────────────────
 
+
 class HospitalBookingCreate(BaseModel):
     """User creates a hospital booking."""
+
     model_config = ConfigDict(extra="forbid")
 
     provider_id: int

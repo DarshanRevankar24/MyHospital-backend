@@ -3,10 +3,11 @@
 from typing import Any
 
 from fastapi import APIRouter, Query
+from fastcrud import compute_offset
 
+from ...infrastructure.auth.http_exceptions import HTTPException
 from ...infrastructure.dependencies import AsyncSessionDep, CurrentSuperUserDep, CurrentUserDep
 from ..common.utils.error_handler import handle_exception
-from ...infrastructure.auth.http_exceptions import HTTPException
 from .dependencies import HospitalServiceDep
 from .schemas import HospitalBookingCreate, HospitalDoctorCreate, HospitalProviderCreate
 
@@ -14,6 +15,7 @@ router = APIRouter(tags=["Services — Hospital"])
 
 
 # ── Providers (public browse) ─────────────────────────────────────────────────
+
 
 @router.get(
     "/",
@@ -29,7 +31,6 @@ async def list_hospitals(
     items_per_page: int = Query(default=10, ge=1, le=50),
 ) -> dict[str, Any]:
     try:
-        from fastcrud import compute_offset
         skip = compute_offset(page, items_per_page)
         return await hospital_service.list_providers(db=db, city=city, speciality=speciality, skip=skip, limit=items_per_page)
     except Exception as e:
@@ -88,6 +89,7 @@ async def list_slots(
 
 
 # ── Bookings (user auth) ──────────────────────────────────────────────────────
+
 
 @router.post("/bookings", summary="Book Hospital Appointment", status_code=201)
 async def create_booking(
@@ -154,6 +156,7 @@ async def cancel_booking(
 
 
 # ── Admin seed endpoints ──────────────────────────────────────────────────────
+
 
 @router.post("/admin/providers", summary="[Admin] Add Hospital Provider", status_code=201)
 async def create_provider(

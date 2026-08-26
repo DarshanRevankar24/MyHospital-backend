@@ -1,9 +1,10 @@
 """Pharmacy SQLAlchemy models."""
 
 from decimal import Decimal
+
 from sqlalchemy import Boolean, Float, ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from ...infrastructure.database.models import TimestampMixin
 from ...infrastructure.database.session import Base
@@ -20,7 +21,7 @@ class PharmacyProvider(Base, TimestampMixin):
     state: Mapped[str] = mapped_column(String(60))
     pincode: Mapped[str] = mapped_column(String(10))
     phone: Mapped[str] = mapped_column(String(15))
-    
+
     address_line2: Mapped[str | None] = mapped_column(String(120), default=None)
     email: Mapped[str | None] = mapped_column(String(80), default=None)
     is_delivery_available: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -42,7 +43,7 @@ class Medicine(Base, TimestampMixin):
     category: Mapped[str] = mapped_column(String(60), index=True)
     form: Mapped[str] = mapped_column(String(30))
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
-    
+
     brand: Mapped[str | None] = mapped_column(String(80), default=None)
     generic_name: Mapped[str | None] = mapped_column(String(120), default=None)
     strength: Mapped[str | None] = mapped_column(String(40), default=None)
@@ -64,8 +65,8 @@ class PharmacyOrder(Base, TimestampMixin):
     patient_name: Mapped[str] = mapped_column(String(80))
     patient_phone: Mapped[str] = mapped_column(String(15))
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
-    
-    items: Mapped[list] = mapped_column(JSON, default=list) # [{medicine_id, quantity, unit_price}]
+
+    items: Mapped[list] = mapped_column(JSON, default=list)  # [{medicine_id, quantity, unit_price}]
     delivery_type: Mapped[str] = mapped_column(String(20), default="pickup")
     delivery_address: Mapped[str | None] = mapped_column(String(300), default=None)
     prescription_url: Mapped[str | None] = mapped_column(String(300), default=None)

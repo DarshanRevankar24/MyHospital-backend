@@ -32,6 +32,7 @@ dependencies = [
     "taskiq-redis>=1.1.2",
     "taskiq-aio-pika>=0.4.3",
     "user-agents>=2.2.0",
+    "boto3>=1.43.80",
 ]
 
 [project.optional-dependencies]
@@ -120,6 +121,14 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "taskiq_aio_pika"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "boto3"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "botocore.*"
 ignore_missing_imports = true
 
 [tool.ruff]

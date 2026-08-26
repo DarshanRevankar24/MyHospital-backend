@@ -1,10 +1,12 @@
 from enum import StrEnum
 
+
 class AmbulanceType(StrEnum):
     BASIC = "basic"
     ADVANCED = "advanced"
     NEONATAL = "neonatal"
     MORTUARY = "mortuary"
+
 
 class AmbulanceRequestStatus(StrEnum):
     PENDING = "pending"
