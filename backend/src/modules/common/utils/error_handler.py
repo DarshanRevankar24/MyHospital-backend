@@ -44,10 +44,12 @@ class CatchAllErrorMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
         except Exception as exc:
             support_id = _generate_support_id()
+            import traceback
+            tb = traceback.format_exc()
             logger.exception(f"Unhandled error [{support_id}] on {request.method} {request.url.path}: {exc}")
             return JSONResponse(
                 status_code=500,
-                content={"detail": GENERIC_ERROR_MESSAGE, "support_id": support_id},
+                content={"detail": GENERIC_ERROR_MESSAGE, "support_id": support_id, "error": str(exc), "traceback": tb},
             )
 
 
