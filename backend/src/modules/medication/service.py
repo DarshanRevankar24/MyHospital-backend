@@ -1,4 +1,3 @@
-
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,8 +13,13 @@ class MedicationService:
     ) -> list[MedicationRead]:
         """Get all medications for a user."""
         res = await crud_medications.get_multi(
-            db=db, user_id=user_id, is_deleted=False, schema_to_select=MedicationRead,
-            return_as_model=True, limit=limit, offset=offset
+            db=db,
+            user_id=user_id,
+            is_deleted=False,
+            schema_to_select=MedicationRead,
+            return_as_model=True,
+            limit=limit,
+            offset=offset,
         )
         return res.get("data", []) if isinstance(res, dict) else []
 

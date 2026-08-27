@@ -13,6 +13,7 @@ from ....modules.pharmacy.routes import router as pharmacy_router
 from ....modules.rate_limit.routes import router as rate_limits_router
 from ....modules.tier.routes import router as tiers_router
 from ....modules.user.routes import router as users_router
+from .metadata import router as metadata_router
 
 router = APIRouter(prefix="/v1")
 router.include_router(users_router, prefix="/users")
@@ -23,6 +24,7 @@ router.include_router(api_keys_router, prefix="/api-keys")
 router.include_router(family_router, prefix="/family")
 router.include_router(medication_router, prefix="/medications")
 router.include_router(notification_router)
+router.include_router(metadata_router, prefix="/metadata")
 
 # Services
 router.include_router(hospital_router, prefix="/services/hospital")
