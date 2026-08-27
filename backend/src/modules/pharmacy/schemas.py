@@ -103,3 +103,10 @@ class PharmacyOrderRead(BaseModel):
     patient_phone: str
     status: OrderStatus
     amount: Decimal
+
+
+class PharmacyOrderCreateInternal(PharmacyOrderCreate):
+    user_id: int
+    order_ref: str
+    status: str
+    total_amount: float

@@ -11,7 +11,7 @@ from ..blood_bank.crud import crud_blood_requests
 from ..hospital.crud import crud_hospital_bookings
 from ..laboratory.crud import crud_lab_bookings
 from ..medication.crud import crud_medications
-from ..medication.schemas import MedicationCreate, MedicationRead, MedicationUpdate
+from ..medication.schemas import MedicationCreate, MedicationCreateInternal, MedicationRead, MedicationUpdate
 from ..notification.service import send_push_notification, send_sms_notification
 from ..pharmacy.crud import crud_pharmacy_orders
 from ..user.crud import crud_users
@@ -73,7 +73,7 @@ class FamilyService:
             "document_access_enabled": True,
         }
 
-        created_conn = await crud_family_connection.create(db=db, object=new_conn_data, schema_to_select=FamilyConnectionRead)
+        created_conn = await crud_family_connection.create(db=db, object=FamilyConnectionCreateInternal(**new_conn_data), schema_to_select=FamilyConnectionRead)
         if not created_conn:
             raise HTTPException(status_code=500, detail="Failed to create family connection request.")
 
@@ -363,9 +363,11 @@ class FamilyService:
         access_data = await self._verify_medication_access(connection_id, viewer_id, db)
         target_user_id = access_data["target_user_id"]
 
-        create_data = data.model_dump()
-        create_data["user_id"] = target_user_id
-        create_data["created_by_user_id"] = viewer_id
+        create_data = MedicationCreateInternal(
+            **data.model_dump(),
+            user_id=target_user_id,
+            created_by_user_id=viewer_id
+        )
 
         created = await crud_medications.create(db=db, object=create_data, schema_to_select=MedicationRead)
         if not created:

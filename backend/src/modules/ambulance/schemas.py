@@ -73,3 +73,9 @@ class AmbulanceRequestRead(BaseModel):
     status: AmbulanceRequestStatus
     assigned_at: str | None = None
     estimated_arrival_min: int | None = None
+
+
+class AmbulanceRequestCreateInternal(AmbulanceRequestCreate):
+    user_id: int
+    request_ref: str
+    status: str

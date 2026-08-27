@@ -10,7 +10,7 @@ from .crud import crud_ambulance_providers, crud_ambulance_requests, crud_ambula
 from .schemas import (
     AmbulanceProviderCreate,
     AmbulanceProviderRead,
-    AmbulanceRequestCreate,
+    AmbulanceRequestCreate, AmbulanceRequestCreateInternal,
     AmbulanceRequestRead,
     AmbulanceVehicleCreate,
     AmbulanceVehicleRead,
@@ -40,7 +40,7 @@ class AmbulanceService:
     async def create_provider(self, data: AmbulanceProviderCreate, db: AsyncSession) -> dict[str, Any]:
         if await crud_ambulance_providers.exists(db=db, registration_number=data.registration_number):
             raise ValidationError("Registration number already exists")
-        created = await crud_ambulance_providers.create(db=db, object=data.model_dump(), schema_to_select=AmbulanceProviderRead)
+        created = await crud_ambulance_providers.create(db=db, object=data, schema_to_select=AmbulanceProviderRead)
         if not created:
             raise ValidationError("Failed to create provider")
         return dict(created)
@@ -49,7 +49,7 @@ class AmbulanceService:
         await self.get_provider(data.provider_id, db)
         if await crud_ambulance_vehicles.exists(db=db, vehicle_number=data.vehicle_number):
             raise ValidationError("Vehicle number already registered")
-        created = await crud_ambulance_vehicles.create(db=db, object=data.model_dump(), schema_to_select=AmbulanceVehicleRead)
+        created = await crud_ambulance_vehicles.create(db=db, object=data, schema_to_select=AmbulanceVehicleRead)
         if not created:
             raise ValidationError("Failed to add vehicle")
         return dict(created)
@@ -68,7 +68,7 @@ class AmbulanceService:
             "status": "pending",
         }
 
-        created = await crud_ambulance_requests.create(db=db, object=req_data, schema_to_select=AmbulanceRequestRead)
+        created = await crud_ambulance_requests.create(db=db, object=AmbulanceRequestCreateInternal(**req_data), schema_to_select=AmbulanceRequestRead)
         if not created:
             raise ValidationError("Failed to create request")
 

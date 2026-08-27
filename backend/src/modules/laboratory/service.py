@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..common.exceptions import ResourceNotFoundError, ValidationError
 from .crud import crud_lab_bookings, crud_lab_providers, crud_lab_tests
 from .schemas import (
-    LabBookingCreate,
+    LabBookingCreate, LabBookingCreateInternal,
     LabBookingRead,
     LaboratoryProviderCreate,
     LaboratoryProviderRead,
@@ -50,7 +50,7 @@ class LaboratoryService:
     async def create_provider(self, data: LaboratoryProviderCreate, db: AsyncSession) -> dict[str, Any]:
         if await crud_lab_providers.exists(db=db, registration_number=data.registration_number):
             raise ValidationError("Registration number already exists")
-        created = await crud_lab_providers.create(db=db, object=data.model_dump(), schema_to_select=LaboratoryProviderRead)
+        created = await crud_lab_providers.create(db=db, object=data, schema_to_select=LaboratoryProviderRead)
         if not created:
             raise ValidationError("Failed to create provider")
         return dict(created)
@@ -70,7 +70,7 @@ class LaboratoryService:
 
     async def create_test(self, data: LabTestCreate, db: AsyncSession) -> dict[str, Any]:
         await self.get_provider(data.provider_id, db)
-        created = await crud_lab_tests.create(db=db, object=data.model_dump(), schema_to_select=LabTestRead)
+        created = await crud_lab_tests.create(db=db, object=data, schema_to_select=LabTestRead)
         if not created:
             raise ValidationError("Failed to create test")
         return dict(created)
@@ -106,7 +106,7 @@ class LaboratoryService:
             "amount": total,
         }
 
-        created = await crud_lab_bookings.create(db=db, object=booking_data, schema_to_select=LabBookingRead)
+        created = await crud_lab_bookings.create(db=db, object=LabBookingCreateInternal(**booking_data), schema_to_select=LabBookingRead)
         if not created:
             raise ValidationError("Failed to create booking")
         return dict(created)

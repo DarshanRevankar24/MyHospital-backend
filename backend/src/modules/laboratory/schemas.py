@@ -98,3 +98,10 @@ class LabBookingRead(BaseModel):
     status: LabBookingStatus
     amount: Decimal
     report_url: str | None = None
+
+
+class LabBookingCreateInternal(LabBookingCreate):
+    user_id: int
+    booking_ref: str
+    status: str
+    amount: float
