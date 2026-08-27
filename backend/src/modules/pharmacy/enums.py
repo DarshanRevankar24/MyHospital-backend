@@ -1,7 +1,7 @@
-from enum import StrEnum
+import enum
 
 
-class MedicineForm(StrEnum):
+class MedicineForm(str, enum.Enum):
     TABLET = "tablet"
     SYRUP = "syrup"
     INJECTION = "injection"
@@ -11,12 +11,12 @@ class MedicineForm(StrEnum):
     OTHER = "other"
 
 
-class DeliveryType(StrEnum):
+class DeliveryType(str, enum.Enum):
     PICKUP = "pickup"
     DELIVERY = "delivery"
 
 
-class OrderStatus(StrEnum):
+class OrderStatus(str, enum.Enum):
     PENDING = "pending"
     CONFIRMED = "confirmed"
     DISPENSED = "dispensed"

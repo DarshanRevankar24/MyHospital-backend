@@ -1,9 +1,9 @@
 """API Key management enums."""
 
-from enum import StrEnum
+import enum
 
 
-class KeyStatus(StrEnum):
+class KeyStatus(str, enum.Enum):
     """API key status enumeration."""
 
     ACTIVE = "active"
@@ -13,7 +13,7 @@ class KeyStatus(StrEnum):
     REVOKED = "revoked"
 
 
-class KeyPermissionResource(StrEnum):
+class KeyPermissionResource(str, enum.Enum):
     """API key permission resources."""
 
     CONVERSATIONS = "conversations"
@@ -27,7 +27,7 @@ class KeyPermissionResource(StrEnum):
     WILDCARD = "*"
 
 
-class KeyPermissionAction(StrEnum):
+class KeyPermissionAction(str, enum.Enum):
     """API key permission actions."""
 
     READ = "read"
@@ -40,7 +40,7 @@ class KeyPermissionAction(StrEnum):
     WILDCARD = "*"
 
 
-class KeyType(StrEnum):
+class KeyType(str, enum.Enum):
     """API key type enumeration.
 
     Types:
@@ -58,7 +58,7 @@ class KeyType(StrEnum):
     WEBHOOK = "webhook"
 
 
-class HTTPMethod(StrEnum):
+class HTTPMethod(str, enum.Enum):
     """HTTP method enumeration for API key usage tracking."""
 
     GET = "GET"

@@ -1,9 +1,9 @@
 """Family module enums."""
 
-from enum import StrEnum
+import enum
 
 
-class RelationType(StrEnum):
+class RelationType(str, enum.Enum):
     """Relationship type declared by the requester when sending a family connection request."""
 
     SPOUSE = "spouse"

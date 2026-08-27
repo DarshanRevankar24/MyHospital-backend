@@ -1,5 +1,6 @@
 import hashlib
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+UTC = timezone.utc
 
 try:
     import aiomcache
