@@ -104,8 +104,7 @@ class FamilyService:
             await send_sms_notification(
                 db=db,
                 user_id=recipient_id,
-                message=f"{requester_name} sent you a family connection request "
-                f"({relation_label}). Open the app to respond.",
+                message=f"{requester_name} sent you a family connection request ({relation_label}). Open the app to respond.",
                 notification_type="family_request",
             )
         except Exception as exc:
