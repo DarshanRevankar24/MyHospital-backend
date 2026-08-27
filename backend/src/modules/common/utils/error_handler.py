@@ -63,10 +63,15 @@ def register_exception_handlers(app: FastAPI) -> None:
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
         support_id = _generate_support_id()
-        logger.warning(f"Validation error [{support_id}] on {request.method} {request.url.path}: {exc.errors()}")
+        errors = exc.errors()
+        logger.warning(f"Validation error [{support_id}] on {request.method} {request.url.path}: {errors}")
         return JSONResponse(
             status_code=422,
-            content={"detail": "Invalid request. Please check your input and try again.", "support_id": support_id},
+            content={
+                "detail": "Invalid request. Please check your input and try again.",
+                "support_id": support_id,
+                "validation_errors": errors
+            },
         )
 
     @app.exception_handler(DomainError)
