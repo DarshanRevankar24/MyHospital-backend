@@ -1,9 +1,9 @@
 """Infrastructure configuration enums."""
 
-from enum import StrEnum
+import enum
 
 
-class CacheBackend(StrEnum):
+class CacheBackend(str, enum.Enum):
     """Cache backend types.
 
     Supported backends for caching and rate limiting.
@@ -14,7 +14,7 @@ class CacheBackend(StrEnum):
     MEMORY = "memory"
 
 
-class SessionBackend(StrEnum):
+class SessionBackend(str, enum.Enum):
     """Session storage backend types.
 
     Supported backends for session storage (crudauth supports redis and memory only).
@@ -24,7 +24,7 @@ class SessionBackend(StrEnum):
     MEMORY = "memory"
 
 
-class TaskiqBrokerType(StrEnum):
+class TaskiqBrokerType(str, enum.Enum):
     """Taskiq message broker types.
 
     Supported message brokers for async task processing.
@@ -34,7 +34,7 @@ class TaskiqBrokerType(StrEnum):
     RABBITMQ = "rabbitmq"
 
 
-class LogLevel(StrEnum):
+class LogLevel(str, enum.Enum):
     """Log level types.
 
     Standard Python logging levels.
@@ -47,7 +47,7 @@ class LogLevel(StrEnum):
     CRITICAL = "CRITICAL"
 
 
-class LogFormat(StrEnum):
+class LogFormat(str, enum.Enum):
     """Log format types.
 
     Supported log output formats.

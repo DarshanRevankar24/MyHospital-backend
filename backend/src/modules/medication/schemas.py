@@ -2,6 +2,7 @@ from datetime import date
 from pydantic import BaseModel, ConfigDict, Field
 
 from ..user.schemas import UserRead
+from .enums import MedicineType
 
 
 class MedicationCreate(BaseModel):
@@ -10,6 +11,7 @@ class MedicationCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(..., max_length=200, description="Name of the medicine")
+    medicine_type: MedicineType = Field(..., description="Type of the medicine (e.g., Tablet, Syrup)")
     dosage: str = Field(..., max_length=100, description="Dosage (e.g., '500mg', '2 drops')")
     frequency: str = Field(..., max_length=100, description="Frequency (e.g., 'Daily', 'Twice a day')")
     instructions: str | None = Field(default=None, max_length=500, description="Special instructions")
@@ -24,6 +26,7 @@ class MedicationUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str | None = Field(default=None, max_length=200)
+    medicine_type: MedicineType | None = Field(default=None)
     dosage: str | None = Field(default=None, max_length=100)
     frequency: str | None = Field(default=None, max_length=100)
     instructions: str | None = Field(default=None, max_length=500)
@@ -40,6 +43,7 @@ class MedicationRead(BaseModel):
     id: int
     user_id: int
     name: str
+    medicine_type: MedicineType
     dosage: str
     frequency: str
     instructions: str | None

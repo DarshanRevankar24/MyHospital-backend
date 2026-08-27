@@ -1,11 +1,12 @@
 from datetime import date
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import JSON, Date, ForeignKey, Integer, String
+from sqlalchemy import JSON, Date, ForeignKey, Integer, String, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...infrastructure.database.models import SoftDeleteMixin, TimestampMixin
 from ...infrastructure.database.session import Base
+from .enums import MedicineType
 
 if TYPE_CHECKING:
     from ..user.models import User
@@ -27,6 +28,7 @@ class Medication(Base, TimestampMixin, SoftDeleteMixin):
 
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"), index=True)
     name: Mapped[str] = mapped_column(String(200))
+    medicine_type: Mapped[MedicineType] = mapped_column(SQLAlchemyEnum(MedicineType), default=MedicineType.OTHER)
     dosage: Mapped[str] = mapped_column(String(100))
     frequency: Mapped[str] = mapped_column(String(100))
     start_date: Mapped[date] = mapped_column(Date)

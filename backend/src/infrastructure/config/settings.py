@@ -1,6 +1,6 @@
 import logging
 import os
-from enum import StrEnum
+import enum
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -25,7 +25,7 @@ logger.info(f"Using environment file at: {env_path}")
 config = Config(env_path)
 
 
-class EnvironmentOption(StrEnum):
+class EnvironmentOption(str, enum.Enum):
     """Environment options for the application."""
 
     PRODUCTION = "production"
