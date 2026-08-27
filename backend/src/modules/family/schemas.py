@@ -52,9 +52,10 @@ class FamilyConnectionRead(BaseModel):
     recipient: UserRead | None = None
 
 
-class FamilyConnectionCreateInternal(FamilyConnectionCreate):
+class FamilyConnectionCreateInternal(BaseModel):
     requester_id: int
     recipient_id: int
     status: str
+    relation: str
     permissions: dict
     document_access_enabled: bool
