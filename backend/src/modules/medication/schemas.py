@@ -20,6 +20,11 @@ class MedicationCreate(BaseModel):
     reminder_times: list[str] = Field(default_factory=list, description="List of times in HH:MM format")
 
 
+class MedicationCreateInternal(MedicationCreate):
+    user_id: int
+    created_by_user_id: int
+
+
 class MedicationUpdate(BaseModel):
     """Schema for updating an existing medication entry."""
 

@@ -80,3 +80,9 @@ class BloodRequestRead(BaseModel):
     required_by_date: str | None = None
     status: BloodRequestStatus
     notes: str | None = None
+
+
+class BloodRequestCreateInternal(BloodRequestCreate):
+    user_id: int
+    request_ref: str
+    status: str

@@ -10,7 +10,7 @@ from .crud import crud_blood_bank_providers, crud_blood_requests, crud_blood_sto
 from .schemas import (
     BloodBankProviderCreate,
     BloodBankProviderRead,
-    BloodRequestCreate,
+    BloodRequestCreate, BloodRequestCreateInternal,
     BloodRequestRead,
     BloodStockCreate,
     BloodStockRead,
@@ -41,7 +41,7 @@ class BloodBankService:
         if await crud_blood_bank_providers.exists(db=db, license_number=data.license_number):
             raise ValidationError("License number already registered")
         created = await crud_blood_bank_providers.create(
-            db=db, object=data.model_dump(), schema_to_select=BloodBankProviderRead
+            db=db, object=data, schema_to_select=BloodBankProviderRead
         )
         if not created:
             raise ValidationError("Failed to create provider")
@@ -65,7 +65,7 @@ class BloodBankService:
         if existing:
             updated = await crud_blood_stocks.update(db=db, object={"units_available": data.units_available}, id=existing["id"])
             return dict(updated or existing)
-        created = await crud_blood_stocks.create(db=db, object=data.model_dump(), schema_to_select=BloodStockRead)
+        created = await crud_blood_stocks.create(db=db, object=data, schema_to_select=BloodStockRead)
         if not created:
             raise ValidationError("Failed to update stock")
         return dict(created)
@@ -76,7 +76,7 @@ class BloodBankService:
         if not stock or stock["units_available"] < data.units_required:
             raise ValidationError(f"Insufficient {data.blood_group} units at this blood bank")
         req_data = {"request_ref": _ref(), "user_id": user_id, **data.model_dump(), "status": "pending"}
-        created = await crud_blood_requests.create(db=db, object=req_data, schema_to_select=BloodRequestRead)
+        created = await crud_blood_requests.create(db=db, object=BloodRequestCreateInternal(**req_data), schema_to_select=BloodRequestRead)
         if not created:
             raise ValidationError("Failed to create request")
         return dict(created)

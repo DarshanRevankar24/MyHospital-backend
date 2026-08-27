@@ -11,7 +11,7 @@ from .crud import crud_medicines, crud_pharmacy_orders, crud_pharmacy_providers
 from .schemas import (
     MedicineCreate,
     MedicineRead,
-    PharmacyOrderCreate,
+    PharmacyOrderCreate, PharmacyOrderCreateInternal,
     PharmacyOrderRead,
     PharmacyProviderCreate,
     PharmacyProviderRead,
@@ -50,7 +50,7 @@ class PharmacyService:
     async def create_provider(self, data: PharmacyProviderCreate, db: AsyncSession) -> dict[str, Any]:
         if await crud_pharmacy_providers.exists(db=db, license_number=data.license_number):
             raise ValidationError("License number already registered")
-        created = await crud_pharmacy_providers.create(db=db, object=data.model_dump(), schema_to_select=PharmacyProviderRead)
+        created = await crud_pharmacy_providers.create(db=db, object=data, schema_to_select=PharmacyProviderRead)
         if not created:
             raise ValidationError("Failed to create pharmacy")
         return dict(created)
@@ -72,7 +72,7 @@ class PharmacyService:
 
     async def create_medicine(self, data: MedicineCreate, db: AsyncSession) -> dict[str, Any]:
         await self.get_provider(data.provider_id, db)
-        created = await crud_medicines.create(db=db, object=data.model_dump(), schema_to_select=MedicineRead)
+        created = await crud_medicines.create(db=db, object=data, schema_to_select=MedicineRead)
         if not created:
             raise ValidationError("Failed to add medicine")
         return dict(created)
@@ -138,7 +138,7 @@ class PharmacyService:
                     db=db, object={"stock_quantity": med["stock_quantity"] - item.quantity}, id=med["id"]
                 )
 
-        created = await crud_pharmacy_orders.create(db=db, object=order_data, schema_to_select=PharmacyOrderRead)
+        created = await crud_pharmacy_orders.create(db=db, object=PharmacyOrderCreateInternal(**order_data), schema_to_select=PharmacyOrderRead)
         if not created:
             raise ValidationError("Failed to place order")
         return dict(created)

@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..common.exceptions import ResourceNotFoundError, ValidationError
 from .crud import crud_hospital_bookings, crud_hospital_doctors, crud_hospital_providers, crud_hospital_slots
 from .schemas import (
-    HospitalBookingCreate,
+    HospitalBookingCreate, HospitalBookingCreateInternal,
     HospitalBookingRead,
     HospitalDoctorCreate,
     HospitalDoctorRead,
@@ -58,7 +58,7 @@ class HospitalService:
         existing = await crud_hospital_providers.exists(db=db, registration_number=data.registration_number)
         if existing:
             raise ValidationError("A provider with this registration number already exists")
-        created = await crud_hospital_providers.create(db=db, object=data.model_dump(), schema_to_select=HospitalProviderRead)
+        created = await crud_hospital_providers.create(db=db, object=data, schema_to_select=HospitalProviderRead)
         if not created:
             raise ValidationError("Failed to create provider")
         return dict(created)
@@ -75,7 +75,7 @@ class HospitalService:
 
     async def create_doctor(self, data: HospitalDoctorCreate, db: AsyncSession) -> dict[str, Any]:
         await self.get_provider(data.provider_id, db)
-        created = await crud_hospital_doctors.create(db=db, object=data.model_dump(), schema_to_select=HospitalDoctorRead)
+        created = await crud_hospital_doctors.create(db=db, object=data, schema_to_select=HospitalDoctorRead)
         if not created:
             raise ValidationError("Failed to create doctor")
         return dict(created)
@@ -94,7 +94,7 @@ class HospitalService:
         return dict(res)
 
     async def create_slot(self, data: HospitalSlotCreate, db: AsyncSession) -> dict[str, Any]:
-        created = await crud_hospital_slots.create(db=db, object=data.model_dump(), schema_to_select=HospitalSlotRead)
+        created = await crud_hospital_slots.create(db=db, object=data, schema_to_select=HospitalSlotRead)
         if not created:
             raise ValidationError("Failed to create slot")
         return dict(created)
@@ -136,7 +136,7 @@ class HospitalService:
             id=data.slot_id,
         )
 
-        created = await crud_hospital_bookings.create(db=db, object=booking_data, schema_to_select=HospitalBookingRead)
+        created = await crud_hospital_bookings.create(db=db, object=HospitalBookingCreateInternal(**booking_data), schema_to_select=HospitalBookingRead)
         if not created:
             raise ValidationError("Failed to create booking")
         return dict(created)

@@ -150,3 +150,13 @@ class HospitalBookingRead(BaseModel):
     symptoms: str | None = None
     status: BookingStatus
     amount: Decimal
+
+
+class HospitalBookingCreateInternal(HospitalBookingCreate):
+    user_id: int
+    provider_id: int
+    doctor_id: int
+    slot_id: int
+    booking_ref: str
+    status: str
+    amount: float

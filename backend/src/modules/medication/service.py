@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .crud import crud_medications
-from .schemas import MedicationCreate, MedicationRead, MedicationUpdate
+from .schemas import MedicationCreate, MedicationCreateInternal, MedicationRead, MedicationUpdate
 
 
 class MedicationService:
@@ -27,9 +27,11 @@ class MedicationService:
         self, user_id: int, creator_id: int, data: MedicationCreate, db: AsyncSession
     ) -> MedicationRead:
         """Create a new medication entry."""
-        create_data = data.model_dump()
-        create_data["user_id"] = user_id
-        create_data["created_by_user_id"] = creator_id
+        create_data = MedicationCreateInternal(
+            **data.model_dump(),
+            user_id=user_id,
+            created_by_user_id=creator_id
+        )
 
         created = await crud_medications.create(
             db=db, object=create_data, schema_to_select=MedicationRead, return_as_model=True
