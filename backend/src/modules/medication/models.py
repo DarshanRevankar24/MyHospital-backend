@@ -1,7 +1,8 @@
 from datetime import date
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
-from sqlalchemy import JSON, Date, ForeignKey, Integer, String, Enum as SQLAlchemyEnum
+from sqlalchemy import JSON, Date, ForeignKey, Integer, String
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ...infrastructure.database.models import SoftDeleteMixin, TimestampMixin
@@ -34,7 +35,7 @@ class Medication(Base, TimestampMixin, SoftDeleteMixin):
     start_date: Mapped[date] = mapped_column(Date)
     # Track if a family member added this
     created_by_user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"), index=True)
-    
+
     instructions: Mapped[str | None] = mapped_column(String(500), default=None)
     end_date: Mapped[date | None] = mapped_column(Date, default=None)
     reminder_times: Mapped[list[str]] = mapped_column(JSON, default=list)  # list of HH:MM strings

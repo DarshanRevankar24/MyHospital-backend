@@ -35,4 +35,7 @@ class FamilyConnection(Base, TimestampMixin, SoftDeleteMixin):
     recipient: Mapped["User"] = relationship("User", foreign_keys=[recipient_id], lazy="selectin", init=False)
 
     def __repr__(self) -> str:
-        return f"<FamilyConnection(requester_id={self.requester_id}, recipient_id={self.recipient_id}, status={self.status}, relation={self.relation})>"
+        return (
+            f"<FamilyConnection(id={self.id}, requester_id={self.requester_id}, "
+            f"recipient_id={self.recipient_id}, status={self.status}, relation={self.relation})>"
+        )

@@ -1,5 +1,6 @@
 import enum
 
+
 class MedicineType(str, enum.Enum):
     TABLET = "Tablet"
     SYRUP = "Syrup"

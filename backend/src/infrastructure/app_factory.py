@@ -242,7 +242,7 @@ def create_application(
 
     kwargs.update(metadata)
 
-    hide_docs = (
+    (
         isinstance(settings, EnvironmentSettings)
         and settings.ENVIRONMENT == EnvironmentOption.PRODUCTION
         and not _enable_docs_in_production
@@ -327,8 +327,8 @@ def create_application(
                 openapi_url="/openapi.json",
                 title=metadata.get("title", "API"),
                 swagger_ui_parameters={
-                    "withCredentials": True,        # send session cookies automatically
-                    "persistAuthorization": True,   # keep auth across page refreshes
+                    "withCredentials": True,  # send session cookies automatically
+                    "persistAuthorization": True,  # keep auth across page refreshes
                 },
             )
 

@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-UTC = timezone.utc
 
 try:
     from redis.asyncio import Redis
@@ -14,6 +13,8 @@ from pydantic import BaseModel
 from ....modules.common.utils.logger import get_logger
 from ..base import RateLimiterBackend
 from ..exceptions import RateLimiterBackendException
+
+UTC = timezone.utc
 
 logger = get_logger(__name__)
 

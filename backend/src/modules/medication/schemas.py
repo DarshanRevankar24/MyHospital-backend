@@ -1,4 +1,5 @@
 from datetime import date
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from ..user.schemas import UserRead
@@ -51,5 +52,5 @@ class MedicationRead(BaseModel):
     end_date: date | None
     reminder_times: list[str]
     created_by_user_id: int
-    
+
     created_by: UserRead | None = None

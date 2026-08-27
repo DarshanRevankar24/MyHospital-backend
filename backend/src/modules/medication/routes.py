@@ -27,9 +27,7 @@ async def add_medication(
     service: MedicationServiceDep,
 ) -> dict[str, Any]:
     """Add a new medicine to your schedule."""
-    return await service.create_medication(
-        user_id=current_user["id"], creator_id=current_user["id"], data=data, db=db
-    )
+    return await service.create_medication(user_id=current_user["id"], creator_id=current_user["id"], data=data, db=db)
 
 
 @router.patch("/{medication_id}", summary="Update a medication")
@@ -41,9 +39,7 @@ async def update_medication(
     service: MedicationServiceDep,
 ) -> dict[str, Any]:
     """Update dosage, timings, or instructions for a medicine."""
-    return await service.update_medication(
-        medication_id=medication_id, user_id=current_user["id"], data=data, db=db
-    )
+    return await service.update_medication(medication_id=medication_id, user_id=current_user["id"], data=data, db=db)
 
 
 @router.delete("/{medication_id}", summary="Delete a medication")
