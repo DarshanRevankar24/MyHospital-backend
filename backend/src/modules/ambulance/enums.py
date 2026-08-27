@@ -1,14 +1,14 @@
-from enum import StrEnum
+import enum
 
 
-class AmbulanceType(StrEnum):
+class AmbulanceType(str, enum.Enum):
     BASIC = "basic"
     ADVANCED = "advanced"
     NEONATAL = "neonatal"
     MORTUARY = "mortuary"
 
 
-class AmbulanceRequestStatus(StrEnum):
+class AmbulanceRequestStatus(str, enum.Enum):
     PENDING = "pending"
     ASSIGNED = "assigned"
     EN_ROUTE = "en_route"

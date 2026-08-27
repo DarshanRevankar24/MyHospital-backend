@@ -1,5 +1,6 @@
 import uuid as uuid_pkg
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+UTC = timezone.utc
 
 from sqlalchemy import DateTime, text
 from sqlalchemy.dialects.postgresql import UUID

@@ -1,14 +1,14 @@
 """Laboratory service module enums."""
 
-from enum import StrEnum
+import enum
 
 
-class CollectionType(StrEnum):
+class CollectionType(str, enum.Enum):
     WALK_IN = "walk_in"
     HOME_COLLECTION = "home_collection"
 
 
-class LabBookingStatus(StrEnum):
+class LabBookingStatus(str, enum.Enum):
     PENDING = "pending"
     CONFIRMED = "confirmed"
     SAMPLE_COLLECTED = "sample_collected"
@@ -17,7 +17,7 @@ class LabBookingStatus(StrEnum):
     CANCELLED = "cancelled"
 
 
-class TestCategory(StrEnum):
+class TestCategory(str, enum.Enum):
     HAEMATOLOGY = "haematology"
     BIOCHEMISTRY = "biochemistry"
     MICROBIOLOGY = "microbiology"

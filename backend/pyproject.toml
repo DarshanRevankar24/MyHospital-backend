@@ -9,7 +9,7 @@ description = "Modular FastAPI starter — vertical slices, swappable infrastruc
 authors = [{ name = "Benav Labs", email = "contact@benav.io" }]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "aiomcache>=0.8.2",
     "aiosqlite>=0.21.0",

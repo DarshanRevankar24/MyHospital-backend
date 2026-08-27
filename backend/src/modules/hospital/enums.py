@@ -1,9 +1,9 @@
 """Hospital service module enums."""
 
-from enum import StrEnum
+import enum
 
 
-class BookingStatus(StrEnum):
+class BookingStatus(str, enum.Enum):
     """Universal booking status for all service modules."""
 
     PENDING = "pending"
@@ -12,7 +12,7 @@ class BookingStatus(StrEnum):
     CANCELLED = "cancelled"
 
 
-class Speciality(StrEnum):
+class Speciality(str, enum.Enum):
     """Hospital medical specialities."""
 
     GENERAL = "general_medicine"

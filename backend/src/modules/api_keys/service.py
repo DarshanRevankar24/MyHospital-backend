@@ -5,7 +5,8 @@ import binascii
 import hashlib
 import hmac
 import secrets
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
+UTC = timezone.utc
 from typing import Any
 
 from fastcrud.types import GetMultiResponseDict

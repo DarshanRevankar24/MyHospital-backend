@@ -12,7 +12,7 @@ import logging
 from ....infrastructure.logging import get_logger as _get_centralized_logger
 
 
-def get_logger(name: str, level: int | None = None) -> logging.Logger | logging.LoggerAdapter[logging.Logger]:
+def get_logger(name: str, level: int | None = None) -> logging.Logger | logging.LoggerAdapter:
     """Get a configured logger with backward compatibility.
 
     This function provides backward compatibility with the old logging

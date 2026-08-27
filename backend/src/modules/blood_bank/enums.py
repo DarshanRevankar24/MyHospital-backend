@@ -1,7 +1,7 @@
-from enum import StrEnum
+import enum
 
 
-class BloodGroup(StrEnum):
+class BloodGroup(str, enum.Enum):
     A_POS = "A+"
     A_NEG = "A-"
     B_POS = "B+"
@@ -12,13 +12,13 @@ class BloodGroup(StrEnum):
     O_NEG = "O-"
 
 
-class Urgency(StrEnum):
+class Urgency(str, enum.Enum):
     NORMAL = "normal"
     URGENT = "urgent"
     CRITICAL = "critical"
 
 
-class BloodRequestStatus(StrEnum):
+class BloodRequestStatus(str, enum.Enum):
     PENDING = "pending"
     APPROVED = "approved"
     FULFILLED = "fulfilled"

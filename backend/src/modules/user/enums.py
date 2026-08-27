@@ -1,9 +1,9 @@
 """User enums for OAuth provider management and health/identity profile."""
 
-from enum import StrEnum
+import enum
 
 
-class OAuthProvider(StrEnum):
+class OAuthProvider(str, enum.Enum):
     """OAuth provider types for user authentication.
 
     These values are used to identify the OAuth provider used for registration
@@ -15,7 +15,7 @@ class OAuthProvider(StrEnum):
     GITHUB = "github"
 
 
-class GenderEnum(StrEnum):
+class GenderEnum(str, enum.Enum):
     """Biological / self-identified gender options."""
 
     MALE = "male"
@@ -23,7 +23,7 @@ class GenderEnum(StrEnum):
     OTHER = "other"
 
 
-class BloodGroupEnum(StrEnum):
+class BloodGroupEnum(str, enum.Enum):
     """ABO + Rh blood group system."""
 
     A_POS = "A+"
@@ -36,7 +36,7 @@ class BloodGroupEnum(StrEnum):
     O_NEG = "O-"
 
 
-class KYCDocumentType(StrEnum):
+class KYCDocumentType(str, enum.Enum):
     """Accepted government-issued identity document types for KYC verification."""
 
     AADHAAR = "aadhaar"
