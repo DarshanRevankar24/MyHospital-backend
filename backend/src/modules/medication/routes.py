@@ -1,10 +1,9 @@
-from typing import Any
 
 from fastapi import APIRouter
 
 from ...infrastructure.dependencies import AsyncSessionDep, CurrentUserDep
 from .dependencies import MedicationServiceDep
-from .schemas import MedicationCreate, MedicationUpdate
+from .schemas import MedicationCreate, MedicationRead, MedicationUpdate
 
 router = APIRouter(tags=["Medication Tracking"])
 
@@ -14,7 +13,7 @@ async def get_medications(
     current_user: CurrentUserDep,
     db: AsyncSessionDep,
     service: MedicationServiceDep,
-) -> list[dict[str, Any]]:
+) -> list[MedicationRead]:
     """List all your medications and pill reminders."""
     return await service.get_user_medications(user_id=current_user["id"], db=db)
 
@@ -25,7 +24,7 @@ async def add_medication(
     current_user: CurrentUserDep,
     db: AsyncSessionDep,
     service: MedicationServiceDep,
-) -> dict[str, Any]:
+) -> MedicationRead:
     """Add a new medicine to your schedule."""
     return await service.create_medication(user_id=current_user["id"], creator_id=current_user["id"], data=data, db=db)
 
@@ -37,7 +36,7 @@ async def update_medication(
     current_user: CurrentUserDep,
     db: AsyncSessionDep,
     service: MedicationServiceDep,
-) -> dict[str, Any]:
+) -> MedicationRead:
     """Update dosage, timings, or instructions for a medicine."""
     return await service.update_medication(medication_id=medication_id, user_id=current_user["id"], data=data, db=db)
 
