@@ -65,7 +65,9 @@ class PharmacyService:
         return dict(res)
 
     async def search_medicines(self, db: AsyncSession, name: str) -> dict[str, Any]:
-        res = await crud_medicines.get_multi(db=db, offset=0, limit=50, schema_to_select=MedicineRead, is_available=True, name=name)
+        res = await crud_medicines.get_multi(
+            db=db, offset=0, limit=50, schema_to_select=MedicineRead, is_available=True, name=name
+        )
         return dict(res)
 
     async def create_medicine(self, data: MedicineCreate, db: AsyncSession) -> dict[str, Any]:

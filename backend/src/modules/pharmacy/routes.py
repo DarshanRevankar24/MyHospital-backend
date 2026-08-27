@@ -36,6 +36,7 @@ async def list_pharmacies(
 
 # --- Static-segment routes MUST appear before /{provider_id} ---
 
+
 @router.get("/medicines/search", summary="Search Medicines Across All Pharmacies")
 async def search_medicines(db: AsyncSessionDep, service: PharmacyServiceDep, name: str = Query(min_length=2)) -> dict[str, Any]:
     try:
@@ -99,6 +100,7 @@ async def cancel_order(
 
 
 # --- Parameterized routes below ---
+
 
 @router.get("/{provider_id}", summary="Get Pharmacy Detail")
 async def get_pharmacy(provider_id: int, db: AsyncSessionDep, service: PharmacyServiceDep) -> dict[str, Any]:

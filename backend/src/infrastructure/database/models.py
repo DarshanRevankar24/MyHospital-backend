@@ -1,11 +1,12 @@
 import uuid as uuid_pkg
 from datetime import datetime, timezone
-UTC = timezone.utc
 
 from sqlalchemy import DateTime, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, MappedAsDataclass, mapped_column
 from sqlalchemy.types import TIMESTAMP
+
+UTC = timezone.utc
 
 
 class UUIDMixin(MappedAsDataclass):

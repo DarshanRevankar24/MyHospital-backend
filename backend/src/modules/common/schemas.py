@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
-UTC = timezone.utc
 from typing import Any
 
 from pydantic import BaseModel, Field, field_serializer
+
+UTC = timezone.utc
 
 
 class TimestampSchema(BaseModel):

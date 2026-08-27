@@ -6,7 +6,6 @@ import hashlib
 import hmac
 import secrets
 from datetime import datetime, timedelta, timezone
-UTC = timezone.utc
 from typing import Any
 
 from fastcrud.types import GetMultiResponseDict
@@ -35,6 +34,8 @@ from .utils import (
     calculate_response_time_metrics,
     parse_usage_records,
 )
+
+UTC = timezone.utc
 
 logger = get_logger()
 

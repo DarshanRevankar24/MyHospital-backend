@@ -1,6 +1,6 @@
+import enum
 import logging
 import os
-import enum
 
 from pydantic import Field
 from pydantic_settings import BaseSettings

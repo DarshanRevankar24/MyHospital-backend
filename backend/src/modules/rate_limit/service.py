@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime, timezone
-UTC = timezone.utc
 from typing import Any
 
 from fastcrud.types import GetMultiResponseDict
@@ -21,6 +20,8 @@ from .schemas import (
     RateLimitUpdate,
     RateLimitUpdateInternal,
 )
+
+UTC = timezone.utc
 
 
 class RateLimitService:
