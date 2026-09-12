@@ -23,7 +23,6 @@ jobs:
           host: ${{ vars.LIGHTSAIL_HOST || secrets.LIGHTSAIL_HOST }}
           username: ${{ vars.LIGHTSAIL_SSH_USER || secrets.LIGHTSAIL_SSH_USER }}
           key: ${{ vars.LIGHTSAIL_SSH_KEY || secrets.LIGHTSAIL_SSH_KEY }}
-          script_stop: true
           script: |
             set -euo pipefail
 
