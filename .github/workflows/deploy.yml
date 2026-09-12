@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 # Prevent concurrent deployments — if a new push arrives while a deploy
 # is in progress, the queued run waits for the current one to finish.
