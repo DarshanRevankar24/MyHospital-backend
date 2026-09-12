@@ -6,21 +6,6 @@
 name: user-backend
 
 services:
-  migrate:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: migrate
-    env_file:
-      - ./backend/.env
-    environment:
-      POSTGRES_SERVER: postgres
-      CONFIRM_PRODUCTION_MIGRATION: "yes"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: "no"
-
   api:
     build:
       context: ./backend
@@ -38,8 +23,6 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      migrate:
-        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       redis:
@@ -62,8 +45,6 @@ services:
     working_dir: /app/src
     command: taskiq worker infrastructure.taskiq.worker:default_broker --workers 2
     depends_on:
-      migrate:
-        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       redis:

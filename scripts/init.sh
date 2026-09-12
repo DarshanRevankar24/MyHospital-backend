@@ -58,6 +58,7 @@ EXAMPLE_FILE="$PROJECT_DIR/backend/.env.production.example"
 
 if [ -f "$ENV_FILE" ]; then
     info "backend/.env already exists — keeping existing file."
+    sed -i "s|CREATE_TABLES_ON_STARTUP=false|CREATE_TABLES_ON_STARTUP=true|" "$ENV_FILE"
 else
     if [ ! -f "$EXAMPLE_FILE" ]; then
         error "Template file not found at: $EXAMPLE_FILE"
