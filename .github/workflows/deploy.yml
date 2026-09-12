@@ -1,0 +1,41 @@
+name: Deploy to Lightsail
+
+on:
+  push:
+    branches:
+      - main
+
+# Prevent concurrent deployments — if a new push arrives while a deploy
+# is in progress, the queued run waits for the current one to finish.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ vars.LIGHTSAIL_HOST || secrets.LIGHTSAIL_HOST }}
+          username: ${{ vars.LIGHTSAIL_SSH_USER || secrets.LIGHTSAIL_SSH_USER }}
+          key: ${{ vars.LIGHTSAIL_SSH_KEY || secrets.LIGHTSAIL_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            cd ${{ vars.PROJECT_DIR || secrets.PROJECT_DIR }}
+
+            echo ">>> Pulling latest main…"
+            git pull origin main
+
+            echo ">>> Rebuilding and restarting services…"
+            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+
+            echo ">>> Pruning old images…"
+            docker image prune -f
+
+            echo ">>> Deploy complete."
